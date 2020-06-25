@@ -39,7 +39,6 @@ APT_PACKAGES=(
     ninja-build
     protobuf-compiler
     python-dev
-    python-pip
     python-protobuf
     python3-dev
     python3-pip
@@ -68,16 +67,27 @@ function try {
 }
 
 function try_install_apt_packages {
-    try sudo apt-get update
-    try sudo apt-get install -y "${APT_PACKAGES[@]}"
+    try apt-get update
+    try apt-get install -y "${APT_PACKAGES[@]}"
 }
 
 function try_install_python_packages {
     local package
 
+    if ! pip >/dev/null && ! apt-get install python-pip; then
+        echo
+        echo "Seems like you're on a newer distro that doesn't include pip for python2"
+        echo "Please run the following and re-run the prereqs target:"
+        echo
+        echo "  curl https://bootstrap.pypa.io/get-pip.py --output get-pip.py"
+        echo "  chmod +x get-pip.py"
+        echo "  sudo ./get-pip.py"
+        die
+    fi
+
     for package in "${PYTHON_PACKAGES[@]}"; do
-        try sudo pip install "${package}"
-        try sudo pip3 install "${package}"
+        try pip install "${package}"
+        try pip3 install "${package}"
     done
 }
 
