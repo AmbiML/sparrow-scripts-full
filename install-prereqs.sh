@@ -42,7 +42,7 @@ APT_PACKAGES=(
     python-protobuf
     python3-dev
     python3-pip
-    qemu-kvm
+    qemu-system
     rsync
     texlive-bibtex-extra
     texlive-fonts-recommended
