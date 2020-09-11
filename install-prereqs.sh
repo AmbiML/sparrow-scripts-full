@@ -27,20 +27,28 @@ APT_PACKAGES=(
     flex
     gdb
     git
+    gtk-sharp2
     haskell-stack
+    libcanberra-gtk-module
     libclang-dev
     libcunit1-dev
+    libc6-dev gcc
+    libgtk2.0-0
     libsqlite3-dev
     libssl-dev
     libwww-perl
     libxml2-dev
     libxml2-utils
     libxslt-dev
+    libzmq5
+    mlton
+    mono-complete
     ncurses-dev
     ninja-build
     protobuf-compiler
     python-dev
     python-protobuf
+    python3
     python3-dev
     python3-pip
     qemu-system
@@ -51,12 +59,20 @@ APT_PACKAGES=(
     texlive-latex-extra
     texlive-metapost
     u-boot-tools
+    uml-utilities
+    policykit-1
+    screen
 )
 
 PYTHON_PACKAGES=(
     camkes-deps
     sel4-deps
     setuptools
+    robotframework==3.1
+    netifaces
+    requests
+    psutil
+    pyyaml
 )
 
 function die {
@@ -68,9 +84,14 @@ function try {
     "$@" || die
 }
 
+function sudo_try {
+    echo "sudo $@"
+    sudo "$@" || die
+}
+
 function try_install_apt_packages {
-    try apt-get update
-    try apt-get install -y "${APT_PACKAGES[@]}"
+    sudo_try apt-get update
+    sudo_try apt-get install -y "${APT_PACKAGES[@]}"
 }
 
 function try_install_python_packages {
@@ -83,7 +104,7 @@ function try_install_python_packages {
         echo
         echo "  curl https://bootstrap.pypa.io/get-pip.py --output get-pip.py"
         echo "  chmod +x get-pip.py"
-        echo "  sudo ./get-pip.py"
+        echo "  ./get-pip.py"
         die
     fi
 
