@@ -15,6 +15,7 @@
 # limitations under the License.
 
 APT_PACKAGES=(
+    bison
     build-essential
     ccache
     clang
@@ -23,6 +24,7 @@ APT_PACKAGES=(
     curl
     device-tree-compiler
     doxygen
+    flex
     gdb
     git
     haskell-stack
@@ -43,6 +45,7 @@ APT_PACKAGES=(
     python3-pip
     qemu-system
     rsync
+    texinfo
     texlive-bibtex-extra
     texlive-fonts-recommended
     texlive-latex-extra
