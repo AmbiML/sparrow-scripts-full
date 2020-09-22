@@ -34,7 +34,6 @@ APT_PACKAGES=(
     libxml2-dev
     libxml2-utils
     libxslt-dev
-    mlton
     ncurses-dev
     ninja-build
     protobuf-compiler
