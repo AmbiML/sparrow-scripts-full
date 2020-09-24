@@ -15,10 +15,12 @@
 # limitations under the License.
 
 APT_PACKAGES=(
+    asciidoctor
     bison
     build-essential
     ccache
     clang
+    clang-format
     cmake
     cmake-curses-gui
     curl
@@ -28,11 +30,15 @@ APT_PACKAGES=(
     gdb
     git
     gtk-sharp2
+    graphviz
     haskell-stack
+    lcov
     libcanberra-gtk-module
     libclang-dev
     libcunit1-dev
-    libc6-dev gcc
+    libc6-dev gcc g++
+    libfl2
+    libfl-dev
     libgtk2.0-0
     libsqlite3-dev
     libssl-dev
@@ -41,10 +47,10 @@ APT_PACKAGES=(
     libxml2-utils
     libxslt-dev
     libzmq5
-    mlton
     mono-complete
     ncurses-dev
     ninja-build
+    perl
     protobuf-compiler
     python-dev
     python-protobuf
@@ -62,6 +68,9 @@ APT_PACKAGES=(
     uml-utilities
     policykit-1
     screen
+    zlibc
+    zlib1g
+    zlib1g-dev
 )
 
 PYTHON_PACKAGES=(
