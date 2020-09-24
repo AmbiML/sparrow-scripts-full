@@ -84,6 +84,10 @@ PYTHON_PACKAGES=(
     pyyaml
 )
 
+RAPTURE_PACKAGES=(
+    libpng12-0=1.2.54-6
+)
+
 function die {
     [[ ! -z "$@" ]] && echo "$@"
     exit 1
@@ -123,10 +127,25 @@ function try_install_python_packages {
     done
 }
 
+function try_install_rapture_packages {
+    pushd /tmp
+    try rapture download ":${RAPTURE_PACKAGES[@]}:deb"
+    for package in "${RAPTURE_PACKAGES[@]}"; do
+        sudo_try dpkg -i "${output}"*".deb"
+        rm "${output}"*".deb"
+    done
+    popd
+}
+
 echo "Installing apt package dependencies..."
 try_install_apt_packages
 
 echo "Installing python package dependencies..."
 try_install_python_packages
+
+if [[ "$(cat /etc/lsb-release)" == *"Goobuntu"* ]]; then
+    echo "Installing rapture package dependencies..."
+    try_install_rapture_packages
+fi
 
 echo "Installation complete."
