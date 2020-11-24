@@ -37,6 +37,7 @@ APT_PACKAGES=(
     libclang-dev
     libcunit1-dev
     libc6-dev gcc g++
+    libftdi1
     libfl2
     libfl-dev
     libgtk2.0-0
@@ -82,6 +83,7 @@ PYTHON_PACKAGES=(
     requests
     psutil
     pyyaml
+    meson
 )
 
 RAPTURE_PACKAGES=(
