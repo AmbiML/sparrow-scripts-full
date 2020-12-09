@@ -81,12 +81,16 @@ PYTHON_PACKAGES=(
     setuptools
     robotframework==3.1
     netifaces
-    requests
     psutil
     pyyaml
     meson==0.53.2
     hjson
     mako
+    requests
+)
+
+PYTHON3_PACKAGES=(
+    tockloader
 )
 
 RAPTURE_PACKAGES=(
@@ -130,6 +134,11 @@ function try_install_python_packages {
         try pip install "${package}"
         try pip3 install "${package}"
     done
+
+    for package in "${PYTHON3_PACKAGES[@]}"; do
+        try pip3 install "${package}"
+    done
+
 }
 
 function try_install_rapture_packages {
@@ -142,6 +151,14 @@ function try_install_rapture_packages {
     popd
 }
 
+function install_rust {
+    echo "Creating the toolchain path for rust install ${RUSTDIR}."
+    mkdir -p ${RUSTDIR}
+    export CARGO_HOME=${RUSTDIR}
+    export RUSTUP_HOME=${RUSTDIR}
+    try bash -c 'curl https://sh.rustup.rs -sSf | sh -s -- -y --no-modify-path'
+}
+
 echo "Installing apt package dependencies..."
 try_install_apt_packages
 
@@ -152,5 +169,8 @@ if [[ "$(cat /etc/lsb-release)" == *"Goobuntu"* ]]; then
     echo "Installing rapture package dependencies..."
     try_install_rapture_packages
 fi
+
+echo "Installing rust dependencies..."
+install_rust
 
 echo "Installation complete."
