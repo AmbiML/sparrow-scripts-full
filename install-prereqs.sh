@@ -61,6 +61,7 @@ APT_PACKAGES=(
     python3-pip
     qemu-system
     rsync
+    srecord
     texinfo
     texlive-bibtex-extra
     texlive-fonts-recommended
