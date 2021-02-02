@@ -158,6 +158,7 @@ function install_rust {
     export CARGO_HOME=${RUSTDIR}
     export RUSTUP_HOME=${RUSTDIR}
     try bash -c 'curl https://sh.rustup.rs -sSf | sh -s -- -y --no-modify-path'
+    try ${RUSTUP_HOME}/bin/rustup +nightly target add riscv32imc-unknown-none-elf
 }
 
 echo "Installing apt package dependencies..."
