@@ -1,4 +1,4 @@
-screen bash -c "echo Starting renode...; source build/setup.sh; source sim/renode/tools/common.sh; renode --disable-xwt ${SCRIPT_NAME}"
+screen bash -c "echo Starting renode...; source ${ROOTDIR}/build/setup.sh; source ${ROOTDIR}/sim/renode/tools/common.sh; renode --disable-xwt ${SCRIPT_NAME}"
 split
 focus
-screen bash -c "echo Starting renode shell...; sleep 2; telnet localhost 1234"
+screen bash -c "echo Starting renode shell...; sleep 5; telnet localhost 1234"
