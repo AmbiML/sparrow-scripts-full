@@ -84,7 +84,7 @@ PYTHON_PACKAGES=(
     netifaces
     psutil
     pyyaml
-    meson==0.53.2
+    meson==0.54.0
     hjson
     mako
     requests
