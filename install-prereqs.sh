@@ -84,7 +84,6 @@ PYTHON_PACKAGES=(
     netifaces
     psutil
     pyyaml
-    meson==0.54.0
     hjson
     mako
     requests
@@ -92,6 +91,7 @@ PYTHON_PACKAGES=(
 
 PYTHON3_PACKAGES=(
     tockloader
+    meson==0.54.0
 )
 
 RAPTURE_PACKAGES=(
