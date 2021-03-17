@@ -41,7 +41,10 @@ APT_PACKAGES=(
     libftdi1-dev
     libfl2
     libfl-dev
+    libglib2.0-dev
+    libglib2.0-dev-bin
     libgtk2.0-0
+    libpixman-1-dev
     libsqlite3-dev
     libssl-dev
     libwww-perl
