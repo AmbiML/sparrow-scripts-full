@@ -93,7 +93,6 @@ PYTHON_PACKAGES=(
 )
 
 PYTHON3_PACKAGES=(
-    tockloader
     meson==0.54.0
 )
 
@@ -142,6 +141,10 @@ function try_install_python_packages {
     for package in "${PYTHON3_PACKAGES[@]}"; do
         try pip3 install "${package}"
     done
+
+    pushd ${ROOTDIR}/toolchain/tockloader
+        pip3 install -e .
+    popd
 
 }
 
