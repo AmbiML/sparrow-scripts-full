@@ -1,0 +1,13 @@
+#!/bin/bash
+
+if [[ -z "${ROOTDIR}" ]];
+then
+  echo "Source build/setup.sh first"
+  exit 1
+fi
+
+cd ${ROOTDIR}
+source build/setup.sh
+# Refreshing the device tree blob takes no significant time, so we do it on launch.
+dtc -I dts -O dtb sim/config/devicetree/sparrow.dts > sim/config/devicetree/sparrow.dtb
+renode --disable-xwt sim/config/sparrow_smc.resc

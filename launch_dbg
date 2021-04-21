@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [[ -z "${ROOTDIR}" ]];
+then
+  echo "Source build/setup.sh first"
+  exit 1
+fi
+
+cd ${ROOTDIR}
+source build/setup.sh
+
+renode -e "i @sim/config/sparrow_all.resc; start" --disable-xwt

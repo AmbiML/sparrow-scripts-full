@@ -1,0 +1,14 @@
+#!/bin/bash
+
+if [[ -z "${ROOTDIR}" ]];
+then
+  echo "Source build/setup.sh first"
+  exit 1
+fi
+
+cd ${ROOTDIR}
+source build/setup.sh
+m renode
+m multihart_boot_rom
+m libtockrs_helloworld
+m kata
