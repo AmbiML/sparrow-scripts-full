@@ -27,6 +27,7 @@ APT_PACKAGES=(
     device-tree-compiler
     doxygen
     flex
+    fzf
     gdb
     git
     gtk-sharp2
@@ -93,6 +94,7 @@ PYTHON_PACKAGES=(
 
 PYTHON3_PACKAGES=(
     meson==0.54.0
+    pyfzf
 )
 
 RAPTURE_PACKAGES=(
