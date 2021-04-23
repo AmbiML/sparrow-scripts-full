@@ -62,7 +62,6 @@ APT_PACKAGES=(
     python3
     python3-dev
     python3-pip
-    qemu-system
     rsync
     srecord
     texinfo
