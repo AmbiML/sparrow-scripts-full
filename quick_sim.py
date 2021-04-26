@@ -20,6 +20,14 @@ parser.add_argument('--script', dest='script_file',
                     help='script file to run within renode',
                     default="")
 
+parser.add_argument('--prompt-elf', dest='prompt_elf',
+                    help='prompt for elf',
+                    default=False, action="store_true")
+
+parser.add_argument('--elf', dest='elf_file',
+                    help='elf to run within renode',
+                    default="")
+
 parser.add_argument('--start-sim', dest='start_sim',
                     help='start the simulator',
                     default=False, action="store_true")
@@ -39,7 +47,7 @@ def prompt_for_file(search_paths):
 
     paths = []
 
-    for scripts  in [iglob(p) for p in search_paths]:
+    for scripts  in [iglob(p, recursive=True) for p in search_paths]:
         paths += scripts
 
     fzf = FzfPrompt()
@@ -47,12 +55,16 @@ def prompt_for_file(search_paths):
     return script_file
 
 
-def launch_renode(script_file, start=False):
+def launch_renode(script_file, elf_file, start=False):
     """ Given a script execute it in our environment using renode"""
 
     cmd = ["mono",
-            "%s/host/renode/Renode.exe" % env['OUT'],
-            '-e"i @%s"' % script_file]
+            "%s/host/renode/Renode.exe" % env['OUT']]
+
+    if not elf_file == "":
+        cmd.append(r'-e"\$bin=@%s"' % elf_file)
+
+    cmd.append('-e"i @%s"' % script_file)
     if start:
         cmd.append('-e"start"')
 
@@ -80,7 +92,7 @@ def main():
 
     logging.info("Looking for simulation scripts to run...")
 
-    search_path_names = ["sim/config/**/*.resc", "sim/config/*.resc"]
+    search_path_names = ["sim/config/**/*.resc"]
 
     script_file = args.script_file
     if script_file == "":
@@ -90,7 +102,17 @@ def main():
     if not os.path.exists(script_file):
         parser.error("Selected script does not exist.")
 
-    launch_renode(script_file, args.start_sim)
+    elf_file = args.elf_file
+    if args.prompt_elf:
+        search_path_names = ["out/**/*.elf"]
+        if elf_file == "":
+            elf_file = prompt_for_file(search_path_names)
+
+        logging.debug("Selected elf %s", elf_file)
+        if not os.path.exists(elf_file):
+            parser.error("Selected elf does not exits.")
+
+    launch_renode(script_file, elf_file, args.start_sim)
 
 if __name__ == "__main__":
     main()
