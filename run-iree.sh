@@ -24,7 +24,7 @@ IREE_RISCV_TOOLCHAIN="${OUT}/host/iree-build-riscv"
 
 # Generate the MLIR executable with iree-translate from iree-build-host.
 # The artifact is built with dylib target in this script.
-IREE_LLVMAOT_LINKER_PATH="${IREE_BUILD_TOOLCHAIN}/bin/clang++" \
+RISCV_TOOLCHAIN_ROOT="${IREE_BUILD_TOOLCHAIN}" \
 ${IREE_HOST_TOOLCHAIN}/install/bin/iree-translate \
     -iree-mlir-to-vm-bytecode-module -iree-hal-target-backends=dylib-llvm-aot \
     -iree-llvm-target-triple=riscv64 \
@@ -36,9 +36,9 @@ ${IREE_HOST_TOOLCHAIN}/install/bin/iree-translate \
 # Execute the iree runtime (iree-run-module) in RISCV Qemu simulator.
 IREE_RUN_OUT=$(${QEMU_PATH}/qemu-riscv64 -cpu rv64,x-v=true,x-k=true,vlen=256,elen=64,vext_spec=v1.0 \
     -L ${IREE_BUILD_TOOLCHAIN}/sysroot \
-    ${IREE_RISCV_TOOLCHAIN}/iree/tools/iree-run-module -driver=dylib \
-    -module_file=/tmp/iree-run-module-llvm_aot.vmfb \
-    -entry_function=abs -function_inputs="i32=-10")
+    ${IREE_RISCV_TOOLCHAIN}/iree/tools/iree-run-module --driver=dylib \
+    --module_file=/tmp/iree-run-module-llvm_aot.vmfb \
+    --entry_function=abs --function_input="i32=-10")
 echo ${IREE_RUN_OUT}
 
 # Check the result of running abs(-10).
