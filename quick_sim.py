@@ -92,7 +92,7 @@ def main():
 
     logging.info("Looking for simulation scripts to run...")
 
-    search_path_names = ["sim/config/**/*.resc"]
+    search_path_names = ["sim/config/**/*.resc", "out/renode_configs/*.resc"]
 
     script_file = args.script_file
     if script_file == "":
