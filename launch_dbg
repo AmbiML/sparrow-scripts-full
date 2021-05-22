@@ -9,4 +9,10 @@ fi
 cd ${ROOTDIR}
 source build/setup.sh
 
-renode -e "i @sim/config/sparrow_all.resc; start" --disable-xwt
+# Refreshing the device tree blob takes no significant time, so we do it on launch.
+dtc -I dts -O dtb sim/config/devicetree/sparrow.dts > sim/config/devicetree/sparrow.dtb
+
+# Dump everything we need into a tar
+tar -cvf out/ext_flash.tar out/tock/riscv32imc-unknown-none-elf/release/opentitan-matcha.elf out/kata/bbl/bbl sim/config/devicetree/sparrow.dtb
+
+renode -e "i @sim/config/sparrow_all.resc; start;" --disable-xwt
