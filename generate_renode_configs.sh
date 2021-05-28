@@ -71,10 +71,14 @@ for elf_file in ${@}; do
 done
 }
 
-gen_platform earlgrey
-EARLGREY_ELFS=$(find ${OT_EARLGREY_OUT} -type f \( -iname "*sim_verilator.elf" ! -iname "*rom*" \))
-gen_earlgrey_scripts_for_elfs ${EARLGREY_ELFS}
+if [ -d ${ROOTDIR}/hw/opentitan/hw/top_earlgrey ]; then
+  gen_platform earlgrey
+  EARLGREY_ELFS=$(find ${OT_EARLGREY_OUT} -type f \( -iname "*sim_verilator.elf" ! -iname "*rom*" \))
+  gen_earlgrey_scripts_for_elfs ${EARLGREY_ELFS}
+fi
 
-gen_platform sparrow
-SHODAN_ELFS=$(find ${OT_SHODAN_OUT} -type f \( -iname "*sim_verilator.elf" ! -iname "*rom*" \))
-gen_sparrow_scripts_for_elfs ${SHODAN_ELFS}
+if [ -d ${ROOTDIR}/hw/opentitan/hw/top_sparrow ]; then
+  gen_platform sparrow
+  SHODAN_ELFS=$(find ${OT_SHODAN_OUT} -type f \( -iname "*sim_verilator.elf" ! -iname "*rom*" \))
+  gen_sparrow_scripts_for_elfs ${SHODAN_ELFS}
+fi
