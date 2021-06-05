@@ -26,6 +26,7 @@ IREE_RISCV_TOOLCHAIN="${OUT}/host/iree-build-riscv"
 # The artifact is built with dylib target in this script.
 RISCV_TOOLCHAIN_ROOT="${IREE_BUILD_TOOLCHAIN}" \
 ${IREE_HOST_TOOLCHAIN}/install/bin/iree-translate \
+    -iree-input-type=mhlo \
     -iree-mlir-to-vm-bytecode-module -iree-hal-target-backends=dylib-llvm-aot \
     -iree-llvm-target-triple=riscv64 \
     -iree-llvm-target-cpu=sifive-u74 \
