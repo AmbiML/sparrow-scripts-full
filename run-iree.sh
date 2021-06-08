@@ -26,7 +26,6 @@ IREE_RISCV_TOOLCHAIN="${OUT}/host/iree-build-riscv"
 # The artifact is built with dylib target in this script.
 RISCV_TOOLCHAIN_ROOT="${IREE_BUILD_TOOLCHAIN}" \
 ${IREE_HOST_TOOLCHAIN}/install/bin/iree-translate \
-    -iree-input-type=mhlo \
     -iree-mlir-to-vm-bytecode-module -iree-hal-target-backends=dylib-llvm-aot \
     -iree-llvm-target-triple=riscv64 \
     -iree-llvm-target-cpu=sifive-u74 \
@@ -39,11 +38,11 @@ IREE_RUN_OUT=$(${QEMU_PATH}/qemu-riscv64 -cpu rv64,x-v=true,x-k=true,vlen=256,el
     -L ${IREE_BUILD_TOOLCHAIN}/sysroot \
     ${IREE_RISCV_TOOLCHAIN}/iree/tools/iree-run-module --driver=dylib \
     --module_file=/tmp/iree-run-module-llvm_aot.vmfb \
-    --entry_function=abs --function_input="i32=-10")
+    --entry_function=abs --function_input="f32=-10")
 echo ${IREE_RUN_OUT}
 
 # Check the result of running abs(-10).
-if [[ ${IREE_RUN_OUT} == *"i32=10" ]]; then
+if [[ ${IREE_RUN_OUT} == *"f32=10" ]]; then
     echo "Smoke test passed"
 else
     echo "Smoke test failed with mismatch"
