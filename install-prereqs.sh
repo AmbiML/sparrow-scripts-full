@@ -59,7 +59,7 @@ APT_PACKAGES=(
     perl
     protobuf-compiler
     python-dev
-    python-protobuf
+    python3-protobuf
     python3
     python3-dev
     python3-pip
