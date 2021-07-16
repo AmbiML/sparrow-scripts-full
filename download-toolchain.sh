@@ -32,9 +32,9 @@ TOOLCHAIN_GCC_SRC="$1"
 TOOLCHAIN_SRC="${OUT}/tmp/toolchain"
 LLVM_SRC="${TOOLCHAIN_SRC}/llvm-project"
 
-TOOLCHAINLLVM_TAG="2021.04.23"
+TOOLCHAINLLVM_TAG="2021.06.26"
 TOOLCHAINLLVM_BINUTILS_BRANCH="rvv-1.0.x-zfh"
-LLVM_COMMIT="26bd2250c1870f1983fd3439becfbb39e369b8a3"
+
 
 TOOLCHAIN_OUT="${CACHE}/toolchain"
 
@@ -82,7 +82,7 @@ if [[ "${TOOLCHAIN_TARGET}" == "LLVM" ]]; then
 fi
 popd > /dev/null
 
-# Download LLVM project if necessary
+# Download LLVM project if necessary. Always pull from master ToT.
 if [[ "${TOOLCHAIN_TARGET}" == "LLVM" ]]; then
   if [[ -d "${LLVM_SRC}" ]]; then
     echo "Removing existing ${LLVM_SRC}..."
@@ -92,7 +92,7 @@ if [[ "${TOOLCHAIN_TARGET}" == "LLVM" ]]; then
   pushd "${LLVM_SRC}" > /dev/null
   git init
   git remote add origin https://github.com/llvm/llvm-project
-  git fetch origin "${LLVM_COMMIT}" --jobs=8 --depth=1
+  git fetch origin --jobs=8 --depth=1
   git reset --hard FETCH_HEAD
   popd > /dev/null
 fi
