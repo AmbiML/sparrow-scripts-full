@@ -85,10 +85,12 @@ PYTHON_PACKAGES=(
     setuptools
     robotframework==3.1
     netifaces
+    pandas
     psutil
     pyyaml
     hjson
     mako
+    matplotlib
     requests
 )
 
