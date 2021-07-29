@@ -48,6 +48,8 @@ APT_PACKAGES=(
     libpixman-1-dev
     libsqlite3-dev
     libssl-dev
+    libtinfo-dev
+    libtinfo5
     libwww-perl
     libxml2-dev
     libxml2-utils
