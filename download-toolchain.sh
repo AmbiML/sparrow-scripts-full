@@ -82,7 +82,7 @@ if [[ "${TOOLCHAIN_TARGET}" == "LLVM" ]]; then
 fi
 popd > /dev/null
 
-# Download LLVM project if necessary. Always pull from master ToT.
+# Download LLVM project if necessary. Always pull from main ToT.
 if [[ "${TOOLCHAIN_TARGET}" == "LLVM" ]]; then
   if [[ -d "${LLVM_SRC}" ]]; then
     echo "Removing existing ${LLVM_SRC}..."
@@ -92,7 +92,6 @@ if [[ "${TOOLCHAIN_TARGET}" == "LLVM" ]]; then
   pushd "${LLVM_SRC}" > /dev/null
   git init
   git remote add origin https://github.com/llvm/llvm-project
-  git fetch origin --jobs=8 --depth=1
-  git reset --hard FETCH_HEAD
+  git pull origin main --jobs=8 --depth=1
   popd > /dev/null
 fi
