@@ -94,6 +94,7 @@ PYTHON_PACKAGES=(
     mako
     matplotlib
     requests
+    wget
 )
 
 PYTHON3_PACKAGES=(
