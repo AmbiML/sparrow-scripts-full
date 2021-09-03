@@ -23,6 +23,7 @@ APT_PACKAGES=(
     clang-format
     cmake
     cmake-curses-gui
+    cpio
     curl
     device-tree-compiler
     doxygen
