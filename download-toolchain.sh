@@ -22,11 +22,12 @@ if [[ -z "${ROOTDIR}" ]]; then
   exit 1
 fi
 if [[ -z "$1" ]]; then
-  echo "Usage: download-toolchain.sh <gcc dir> [<TARGET>]"
+  echo "Usage: download-toolchain.sh <gcc dir> [<TARGET> | GCC | LLVM] [<VARIANT> | master | RVV]"
   exit 1
 fi
 
 TOOLCHAIN_TARGET=${2:-GCC}
+TOOLCHAIN_VARIANT=${3:-master}
 
 TOOLCHAIN_GCC_SRC="$1"
 TOOLCHAIN_SRC="${OUT}/tmp/toolchain"
@@ -52,18 +53,19 @@ if [[ -d "${TOOLCHAIN_GCC_SRC}" ]]; then
 fi
 mkdir -p "${TOOLCHAIN_GCC_SRC}"
 
-# Download from the http://github.com/riscv/riscv-gnu-toolchain. For LLVM 32-bit RVV support,
-# it requires a newer branch, whereas the native gcc rvv toolchain can use rvv-intrinsic branch.
-# Use git init and git fetch to avoid creating extra layer of the source code.
+# Download from the http://github.com/riscv/riscv-gnu-toolchain. For LLVM 32-bit RVV support or
+# regular gcc, it requires a newer branch, whereas the native gcc rvv toolchain can use
+# rvv-intrinsic branch. Use git init and git fetch to avoid creating extra layer of the
+# source code.
 pushd "${TOOLCHAIN_GCC_SRC}" > /dev/null
 git init
 git remote add origin https://github.com/riscv/riscv-gnu-toolchain
-if [[ "${TOOLCHAIN_TARGET}" == "GCC" ]]; then
-  echo "Download the source code for GCC target"
+if [[ "${TOOLCHAIN_TARGET}" == "GCC" ]] && [[ "${TOOLCHAIN_VARIANT}" == "RVV" ]]; then
+  echo "Downloading the GNU toolchain source code for GCC RVV"
   git fetch origin rvv-intrinsic
   git reset --hard FETCH_HEAD
-elif [[ "${TOOLCHAIN_TARGET}" == "LLVM" ]]; then
-  echo "Download the source code for LLVM target"
+else
+  echo "Downloading the GNU toolchain source code from master"
   git fetch origin --tags
   git reset --hard ${TOOLCHAINLLVM_TAG}
 fi
