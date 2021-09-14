@@ -86,7 +86,7 @@ PYTHON_PACKAGES=(
     camkes-deps
     sel4-deps
     setuptools
-    robotframework==3.1
+    robotframework==4.0.1
     netifaces
     pandas
     psutil
