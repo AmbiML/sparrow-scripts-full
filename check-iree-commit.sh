@@ -33,6 +33,7 @@ COMMIT=$(git -C "${IREE_SRC}" rev-parse HEAD)
 if grep -q "${COMMIT}" "${IREE_COMPILER_DIR}/tag"; then
   echo "Source code commit matches with the compiler."
 else
-  echo "!!! Source code commit mismatches with the compiler. Please re-download \
-the compiler ('m iree_compiler') and resync the repo if you hit the compiler error.!!!"
+  echo -e "!!!!Source code commit mismatches with the compiler.\n\
+Please check the info at \"${IREE_COMPILER_DIR}/tag\" with\n\
+\"${IREE_SRC}\" if you hit the compilation/runtime errors.!!!!"
 fi

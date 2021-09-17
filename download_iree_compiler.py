@@ -4,6 +4,7 @@
 import os
 import sys
 import tarfile
+import argparse
 import requests
 import wget
 
@@ -12,20 +13,41 @@ if not iree_compiler_dir:
     print("Please run 'source build/setup.sh' first")
     sys.exit(-1)
 
+parser = argparse.ArgumentParser(
+    description="Download IREE host compiler from snapshot releases")
+parser.add_argument(
+    "--tag_name", action="store", default="",
+    help="snapshot tag to download. If not set, download the latest")
+args = parser.parse_args()
 r = requests.get(
-    "https://api.github.com/repos/google/iree/releases?per_page=1", auth=(
+    "https://api.github.com/repos/google/iree/releases?per_page=60", auth=(
         'user', 'pass'))
 
 if r.status_code != 200:
-    print("Not getting the right snapshot information. Status code: %d", r.status_code)
+    print("Not getting the right snapshot information. Status code: %d",
+          r.status_code)
     sys.exit(-1)
 
-snapshot = r.json()[0]
+TAG_FOUND = False
+if args.tag_name:
+    for x in r.json():
+        if x["tag_name"] == args.tag_name:
+            TAG_FOUND = True
+            snapshot = x
+            break
+else:
+    TAG_FOUND = True
+    snapshot = r.json()[0]
+
+if not TAG_FOUND:
+    print("!!!!!IREE snapshot can't be found with tag %s, please try a "
+          "different tag!!!!!" % args.tag_name)
+    sys.exit(-1)
 
 tag_name = snapshot["tag_name"]
 commit_sha = snapshot["target_commitish"]
 
-print("Latest snapshot: %s" % tag_name)
+print("Snapshot: %s" % tag_name)
 
 tag_file = os.path.join(iree_compiler_dir, "tag")
 
@@ -43,6 +65,13 @@ if os.path.isfile(tag_file):
 if TAG_MATCH:
     print("IREE compiler is up-to-date")
     sys.exit(0)
+
+# Install IREE TFLite tool
+# Python whl version can be found in tag_name as "snapshot-<version>"
+version=tag_name[9:]
+cmd = ("pip3 install iree-tools-tflite-snapshot==%s -f "
+       "https://github.com/google/iree/releases/ --no-cache-dir" % version)
+os.system(cmd)
 
 # Find the linux tarball and download it.
 TAR_MATCH = False
