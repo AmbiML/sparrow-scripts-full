@@ -56,6 +56,7 @@ APT_PACKAGES=(
     libxml2-utils
     libxslt-dev
     libzmq5
+    lrzsz
     mono-complete
     ncurses-dev
     ninja-build
