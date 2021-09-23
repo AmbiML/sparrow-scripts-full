@@ -62,6 +62,7 @@ APT_PACKAGES=(
     ninja-build
     perl
     protobuf-compiler
+    pv
     python-dev
     python3-protobuf
     python3
