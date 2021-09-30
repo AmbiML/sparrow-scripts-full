@@ -97,6 +97,7 @@ PYTHON_PACKAGES=(
     mako
     matplotlib
     requests
+    tempita
     wget
 )
 
