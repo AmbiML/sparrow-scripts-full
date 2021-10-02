@@ -24,8 +24,8 @@ exec "${GDB}" -q -cd "${ROOTDIR}" \
   -ex "file ${PROGRAM}" \
   -ex "set confirm off" \
   -ex "add-symbol-file ${PROGRAM}" \
-  -ex "add-symbol-file out/tock/riscv32imc-unknown-none-elf/release/opentitan-matcha.elf" \
-  -ex "add-symbol-file out/libtock-rs/riscv32imc-unknown-none-elf/tab/opentitan/hello_world/rv32imc.elf" \
+  -ex "add-symbol-file out/tock-debug/riscv32imc-unknown-none-elf/debug/opentitan-matcha.elf" \
+  -ex "add-symbol-file out/libtock-rs-debug/riscv32imc-unknown-none-elf/tab/opentitan/hello_world/rv32imc.elf" \
   -ex "add-symbol-file out/kata/kernel/kernel.elf" \
   -ex "add-symbol-file out/kata/capdl-loader" \
   -ex "add-symbol-file out/kata/debug_console.instance.bin" \
