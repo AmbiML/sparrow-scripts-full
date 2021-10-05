@@ -79,6 +79,7 @@ APT_PACKAGES=(
     uml-utilities
     policykit-1
     screen
+    wget
     zlibc
     zlib1g
     zlib1g-dev
