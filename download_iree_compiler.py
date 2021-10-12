@@ -4,8 +4,10 @@
 import os
 import sys
 import tarfile
+import time
 import argparse
 import requests
+import urllib
 import wget
 
 from pathlib import Path
@@ -29,7 +31,17 @@ def download_artifact(assets, keywords, out_dir):
     if not os.path.isdir(out_dir):
         os.mkdir(out_dir)
     out_file = os.path.join(out_dir, artifact_name)
-    wget.download(download_url, out=out_file)
+
+    num_retries = 3
+    for i in range(num_retries + 1):
+        try:
+            wget.download(download_url, out=out_file)
+            break
+        except urllib.error.HTTPError as e:
+            if i == num_retries:
+                raise
+            print(f"{e}\nDownload failed. Retrying...")
+            time.sleep(5)
     return out_file
 
 
