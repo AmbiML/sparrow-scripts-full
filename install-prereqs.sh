@@ -124,6 +124,7 @@ function sudo_try {
 function try_install_apt_packages {
     sudo_try apt-get update
     sudo_try apt-get install -y "${APT_PACKAGES[@]}"
+    sed 's/#.*//' ${ROOTDIR}/hw/opentitan-upstream/apt-requirements.txt | sudo_try xargs apt-get install -y
 }
 
 function try_install_python_packages {
@@ -153,6 +154,7 @@ function try_install_python_packages {
         pip3 install -e .
     popd
 
+    pip3 install -r ${ROOTDIR}/hw/opentitan-upstream/python-requirements.txt
 }
 
 echo "Installing apt package dependencies..."
