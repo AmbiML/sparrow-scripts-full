@@ -63,7 +63,6 @@ APT_PACKAGES=(
     perl
     protobuf-compiler
     pv
-    python-dev
     python3-protobuf
     python3
     python3-dev
@@ -85,26 +84,23 @@ APT_PACKAGES=(
     zlib1g-dev
 )
 
-PYTHON_PACKAGES=(
+PYTHON3_PACKAGES=(
     camkes-deps
-    sel4-deps
-    setuptools
-    robotframework==4.0.1
-    netifaces
-    pandas
-    psutil
-    pyyaml
     hjson
     mako
     matplotlib
+    meson==0.54.0
+    netifaces
+    pandas
+    psutil
+    pyfzf
+    pyyaml
     requests
+    robotframework==4.0.1
+    sel4-deps
+    setuptools
     tempita
     wget
-)
-
-PYTHON3_PACKAGES=(
-    meson==0.54.0
-    pyfzf
 )
 
 function die {
@@ -140,11 +136,6 @@ function try_install_python_packages {
         echo "  ./get-pip.py"
         die
     fi
-
-    for package in "${PYTHON_PACKAGES[@]}"; do
-        try pip install "${package}"
-        try pip3 install "${package}"
-    done
 
     for package in "${PYTHON3_PACKAGES[@]}"; do
         try pip3 install "${package}"
