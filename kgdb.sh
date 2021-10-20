@@ -30,6 +30,5 @@ exec "${GDB}" -q -cd "${ROOTDIR}" \
   -ex "add-symbol-file out/kata/capdl-loader" \
   -ex "add-symbol-file out/kata/debug_console.instance.bin" \
   -ex "add-symbol-file out/kata/process_manager.instance.bin" \
-  -ex "add-symbol-file out/kata/sel4debug.instance.bin" \
   -ex "set pagination on" \
   -ex "target remote ${REMOTE}"
