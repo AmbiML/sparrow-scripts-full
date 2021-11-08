@@ -14,6 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+PYTHON_REQUIREMENTS=""
+APT_REQUIREMENTS=""
+
 APT_PACKAGES=(
     asciidoctor
     bison
@@ -120,7 +123,10 @@ function sudo_try {
 function try_install_apt_packages {
     sudo_try apt-get update
     sudo_try apt-get install -y "${APT_PACKAGES[@]}"
-    sed 's/#.*//' ${ROOTDIR}/hw/opentitan-upstream/apt-requirements.txt | sudo_try xargs apt-get install -y
+
+    if [[ ! -z "${APT_REQUIREMENTS}" ]]; then
+        sed 's/#.*//' "${APT_REQUIREMENTS}" | sudo_try xargs apt-get install -y
+    fi
 }
 
 function try_install_python_packages {
@@ -145,13 +151,49 @@ function try_install_python_packages {
         pip3 install -e .
     popd
 
-    pip3 install -r ${ROOTDIR}/hw/opentitan-upstream/python-requirements.txt
+    if [[ ! -z ${PYTHON_REQUIREMENTS} ]]; then
+        pip3 install -r "${PYTHON_REQUIREMENTS}"
+    fi
 }
 
-echo "Installing apt package dependencies..."
-try_install_apt_packages
+function main {
+    local usage="Usage: install-prereqs.sh [-p python-requirements.txt] [-a apt-requirements.txt]"
+    local args=$(getopt -o hp:a: \
+                        --long help,python:,apt: \
+                        -n install-prereqs.sh -- "$@")
+    eval set -- "$args"
 
-echo "Installing python package dependencies..."
-try_install_python_packages
+    while true; do
+        case "$1" in
+            -h|--help)
+                echo $usage
+                return 1
+                ;;
 
-echo "Installation complete."
+            -p|--python)
+                PYTHON_REQUIREMENTS="$2"
+                shift 2
+                ;;
+
+            -a|--apt)
+                APT_REQUIREMENTS="$2"
+                shift 2
+                ;;
+
+            --)
+                shift
+                break
+                ;;
+        esac
+    done
+    
+    echo "Installing apt package dependencies..."
+    try_install_apt_packages
+
+    echo "Installing python package dependencies..."
+    try_install_python_packages
+
+    echo "Installation complete."
+}
+
+main "$@"
