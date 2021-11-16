@@ -87,25 +87,6 @@ APT_PACKAGES=(
     zlib1g-dev
 )
 
-PYTHON3_PACKAGES=(
-    camkes-deps
-    hjson
-    mako
-    matplotlib
-    meson==0.54.0
-    netifaces
-    pandas
-    psutil
-    pyfzf
-    pyyaml
-    requests
-    robotframework==4.0.1
-    sel4-deps
-    setuptools
-    tempita
-    wget
-)
-
 function die {
     [[ ! -z "$@" ]] && echo "$@"
     exit 1
@@ -143,16 +124,16 @@ function try_install_python_packages {
         die
     fi
 
-    for package in "${PYTHON3_PACKAGES[@]}"; do
-        try pip3 install "${package}"
-    done
-
     pushd ${ROOTDIR}/toolchain/tockloader
         pip3 install -e .
     popd
 
     if [[ ! -z ${PYTHON_REQUIREMENTS} ]]; then
-        pip3 install -r "${PYTHON_REQUIREMENTS}"
+        PIP_INSTALL_ARGS=""
+        for REQ_FILE in ${PYTHON_REQUIREMENTS} ; do
+            PIP_INSTALL_ARGS="${PIP_INSTALL_ARGS} -r ${REQ_FILE}"
+        done
+        pip3 install ${PIP_INSTALL_ARGS}
     fi
 }
 

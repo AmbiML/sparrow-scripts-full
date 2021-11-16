@@ -1,0 +1,15 @@
+camkes-deps
+hjson
+mako
+matplotlib
+netifaces
+pandas
+psutil
+pyfzf
+pyyaml
+requests
+robotframework==4.0.1
+sel4-deps
+setuptools
+tempita
+wget
