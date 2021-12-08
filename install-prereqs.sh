@@ -41,7 +41,11 @@ APT_PACKAGES=(
     libcanberra-gtk-module
     libclang-dev
     libcunit1-dev
-    libc6-dev gcc g++
+    libc6-dev
+    gcc
+    g++
+    gcc-10
+    g++-10
     libftdi1
     libftdi1-dev
     libfl2
@@ -124,9 +128,7 @@ function try_install_python_packages {
         die
     fi
 
-    pushd ${ROOTDIR}/toolchain/tockloader
-        pip3 install -e .
-    popd
+    pip3 install -e ${ROOTDIR}/toolchain/tockloader
 
     if [[ ! -z ${PYTHON_REQUIREMENTS} ]]; then
         PIP_INSTALL_ARGS=""
@@ -167,7 +169,7 @@ function main {
                 ;;
         esac
     done
-    
+
     echo "Installing apt package dependencies..."
     try_install_apt_packages
 
