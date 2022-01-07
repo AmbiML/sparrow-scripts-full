@@ -86,7 +86,6 @@ APT_PACKAGES=(
     policykit-1
     screen
     wget
-    zlibc
     zlib1g
     zlib1g-dev
 )
