@@ -34,7 +34,7 @@ TOOLCHAIN_SRC="${OUT}/tmp/toolchain"
 LLVM_SRC="${TOOLCHAIN_SRC}/llvm-project"
 
 TOOLCHAINLLVM_TAG="2021.06.18"
-TOOLCHAINLLVM_BINUTILS_BRANCH="rvv-1.0.x-zfh"
+TOOLCHAINLLVM_BINUTILS_URL="git://sourceware.org/git/binutils-gdb.git"
 
 
 TOOLCHAIN_OUT="${CACHE}/toolchain"
@@ -71,16 +71,15 @@ else
 fi
 popd > /dev/null
 
-# Update the submodules. The riscv-binutils has to point to rvv-1.0.x-zfh regardless of what it is
-# in .gitmodules
+# Update the submodules. The riscv-binutils has to point to upstream binutil-gdb
+# regardless of what it is in .gitmodules
 pushd "${TOOLCHAIN_GCC_SRC}" > /dev/null
 git submodule update --init --jobs=8
 if [[ "${TOOLCHAIN_TARGET}" == "LLVM" ]]; then
   cd "riscv-binutils"
-  git branch "${TOOLCHAINLLVM_BINUTILS_BRANCH}"
-  git fetch origin "${TOOLCHAINLLVM_BINUTILS_BRANCH}" --depth=10
-  git checkout "${TOOLCHAINLLVM_BINUTILS_BRANCH}"
-  git reset --hard FETCH_HEAD
+  git remote set-url origin "${TOOLCHAINLLVM_BINUTILS_URL}"
+  git pull -f origin master --jobs=8 --depth=1
+  git checkout FETCH_HEAD
 fi
 popd > /dev/null
 
