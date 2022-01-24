@@ -17,8 +17,10 @@
 # Install the prebuilt RISC-V GCC/LLVM toolchain.
 
 function clean {
-  rm "${DOWNLOAD_DIR}/${TOOLCHAIN_TARBALL}" \
-     "${DOWNLOAD_DIR}/${TOOLCHAIN_TARBALL}.sha256sum"
+  if [[ ! -f "${PREINSTALL_DIR}/${TOOLCHAIN_TARBALL}" ]]; then
+    rm "${DOWNLOAD_DIR}/${TOOLCHAIN_TARBALL}" \
+       "${DOWNLOAD_DIR}/${TOOLCHAIN_TARBALL}.sha256sum"
+  fi
 }
 
 function die {
@@ -59,16 +61,26 @@ case "${TARGET}" in
     ;;
 esac
 
-DOWNLOAD_URL="https://storage.googleapis.com/sparrow-public-artifacts/${TOOLCHAIN_TARBALL}"
-DOWNLOAD_DIR="${OUT}/tmp"
-
 trap clean EXIT
 
-wget -P "${DOWNLOAD_DIR}" "${DOWNLOAD_URL}"
-wget -P "${DOWNLOAD_DIR}" "${DOWNLOAD_URL}.sha256sum"
-pushd "${DOWNLOAD_DIR}" > /dev/null
-try sha256sum -c "${TOOLCHAIN_TARBALL}.sha256sum"
-popd > /dev/null
+# Used by the CI sparrow docker image
+PREINSTALL_DIR=/usr/src
+
+if [[ -f "${PREINSTALL_DIR}/${TOOLCHAIN_TARBALL}" ]]; then
+  echo "${TOOLCHAIN_TARBALL} stored in the machine at ${PREINSTALL_DIR}"
+  DOWNLOAD_DIR=/usr/src
+else
+  echo "Download ${TOOLCHAIN_TARBALL} from GCS..."
+  DOWNLOAD_URL="https://storage.googleapis.com/sparrow-public-artifacts/${TOOLCHAIN_TARBALL}"
+  DOWNLOAD_DIR="${OUT}/tmp"
+  mkdir -p "${DOWNLOAD_DIR}"
+
+  wget -P "${DOWNLOAD_DIR}" "${DOWNLOAD_URL}"
+  wget -P "${DOWNLOAD_DIR}" "${DOWNLOAD_URL}.sha256sum"
+  pushd "${DOWNLOAD_DIR}" > /dev/null
+  try sha256sum -c "${TOOLCHAIN_TARBALL}.sha256sum"
+  popd > /dev/null
+fi
 
 try tar -C "${CACHE}" -xf "${DOWNLOAD_DIR}/${TOOLCHAIN_TARBALL}"
 
