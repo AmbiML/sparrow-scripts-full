@@ -70,6 +70,7 @@ APT_PACKAGES=(
     perl
     protobuf-compiler
     pv
+    python-is-python3
     python3-protobuf
     python3
     python3-dev
@@ -116,20 +117,6 @@ function try_install_apt_packages {
 
 function try_install_python_packages {
     local package
-
-    if ! pip >/dev/null && ! apt-get install python-pip; then
-        echo
-        echo "Seems like you're on a newer distro that doesn't include pip for python2"
-        echo "Please run the following and re-run the prereqs target:"
-        echo
-        echo "  curl https://bootstrap.pypa.io/get-pip.py --output get-pip.py"
-        echo "  chmod +x get-pip.py"
-        echo "  ./get-pip.py"
-        die
-    fi
-
-    pip3 install -e ${ROOTDIR}/toolchain/tockloader
-
     if [[ ! -z ${PYTHON_REQUIREMENTS} ]]; then
         PIP_INSTALL_ARGS=""
         for REQ_FILE in ${PYTHON_REQUIREMENTS} ; do
