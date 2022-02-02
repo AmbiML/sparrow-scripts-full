@@ -106,13 +106,20 @@ def main():
 
     # Check the tag of the existing download.
     release_match = False
+    built_from_src = False
     if os.path.isfile(tag_file):
         with open(tag_file, "r", encoding="utf-8") as file:
             for line in file:
+                if "built_from_src" in line.replace("\n", ""):
+                    built_from_src = True
+                    break
                 if commit_sha in line.replace("\n", ""):
                     release_match = True
                     break
-
+    if built_from_src:
+        print("Renode was built from the source. run `m renode_clean` if you "
+              "want to download the nightly release.")
+        sys.exit(0)
     if release_match:
         print("Renode is up-to-date")
         sys.exit(0)
