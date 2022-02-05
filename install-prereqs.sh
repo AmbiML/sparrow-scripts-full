@@ -54,6 +54,7 @@ APT_PACKAGES=(
     libglib2.0-dev-bin
     libgtk2.0-0
     libpixman-1-dev
+    libpython3.8
     libsqlite3-dev
     libssl-dev
     libtinfo-dev
