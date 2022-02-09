@@ -42,6 +42,7 @@ APT_PACKAGES=(
     libclang-dev
     libcunit1-dev
     libc6-dev
+    llvm-11-tools
     gcc
     g++
     gcc-10

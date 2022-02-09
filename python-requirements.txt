@@ -1,5 +1,6 @@
 camkes-deps
 hjson
+lit
 mako
 matplotlib
 netifaces
