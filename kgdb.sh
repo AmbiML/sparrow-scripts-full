@@ -10,25 +10,28 @@ if [[ -z "${ROOTDIR}" ]]; then
     exit 1
 fi
 
-GDB="${ROOTDIR}"/cache/toolchain/bin/riscv32-unknown-elf-gdb
+TARGET=riscv32-unknown-elf
+GDB="${ROOTDIR}"/cache/toolchain/bin/${TARGET}-gdb
 PROGRAM=out/sparrow_boot_rom/build-out/multihart_boot_rom/multihart_boot_rom_sim_verilator.elf
 REMOTE=localhost:3333
 
-# TODO(sleffler): camkes components are loaded as part of capdl-loader;
-#   need to calculate offsets
+KATA_OUT=out/kata/${TARGET}/debug
+MATCHA_OUT=out/matcha/riscv32imc-unknown-none-elf/debug
 
 # NB: -q suppresses the banner to workaround the banner msg triggering the pager
+# NB: auto-start cpu0 & cpu1 but leave cpu2 (VC) halted
 exec "${GDB}" -q -cd "${ROOTDIR}" \
   -ex "set pagination off" \
   -ex "directory sw/tock" \
   -ex "file ${PROGRAM}" \
   -ex "set confirm off" \
   -ex "add-symbol-file ${PROGRAM}" \
-  -ex "add-symbol-file out/matcha/riscv32imc-unknown-none-elf/debug/matcha_platform" \
-  -ex "add-symbol-file out/matcha/riscv32imc-unknown-none-elf/debug/matcha_app" \
-  -ex "add-symbol-file out/kata/kernel/kernel.elf" \
-  -ex "add-symbol-file out/kata/capdl-loader" \
-  -ex "add-symbol-file out/kata/debug_console.instance.bin" \
-  -ex "add-symbol-file out/kata/process_manager.instance.bin" \
+  -ex "add-symbol-file ${MATCHA_OUT}/matcha_platform" \
+  -ex "add-symbol-file ${MATCHA_OUT}/matcha_app" \
+  -ex "add-symbol-file ${KATA_OUT}/kernel/kernel.elf" \
+  -ex "add-symbol-file ${KATA_OUT}/capdl-loader" \
+  -ex "add-symbol-file ${KATA_OUT}/debug_console.instance.bin" \
+  -ex "add-symbol-file ${KATA_OUT}/process_manager.instance.bin" \
   -ex "set pagination on" \
-  -ex "target remote ${REMOTE}"
+  -ex "target remote ${REMOTE}" \
+  -ex "monitor cpu0 IsHalted false"
