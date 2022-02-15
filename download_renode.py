@@ -134,17 +134,6 @@ def main():
     tar.extractall(members=members, path=renode_dir)
     tar.close()
 
-    # Make the release has the same interface as build from the source
-    bin_dir = Path(renode_dir) / "bin"
-    if not os.path.isdir(bin_dir):
-        os.mkdir(bin_dir)
-    os.system(f"ln -sfr {renode_dir}/*.so {bin_dir}")
-    os.system(f"ln -sfr {renode_dir}/renode {bin_dir}/Renode.exe")
-    with open(renode_dir / "renode.sh", "w", encoding="utf-8") as file:
-        file.write("#! /bin/sh\n")
-        file.write("cd ${ROOTDIR} && %s/Renode.exe \"$@\"\n" % bin_dir)
-    os.chmod(renode_dir / "renode.sh", 0o755)
-
     os.remove(tar_file)
     print("\nRenode is installed")
 
