@@ -28,10 +28,8 @@ exec "${GDB}" -q -cd "${ROOTDIR}" \
   -ex "add-symbol-file ${PROGRAM}" \
   -ex "add-symbol-file ${MATCHA_OUT}/matcha_platform" \
   -ex "add-symbol-file ${MATCHA_OUT}/matcha_app" \
-  -ex "add-symbol-file ${KATA_OUT}/kernel/kernel.elf" \
-  -ex "add-symbol-file ${KATA_OUT}/capdl-loader" \
-  -ex "add-symbol-file ${KATA_OUT}/debug_console.instance.bin" \
-  -ex "add-symbol-file ${KATA_OUT}/process_manager.instance.bin" \
   -ex "set pagination on" \
   -ex "target remote ${REMOTE}" \
-  -ex "monitor cpu0 IsHalted false"
+  -ex "monitor cpu0 IsHalted false" \
+  -ex "monitor cpu1 CreateseL4" \
+  -ex "source sim/config/gdbscript.py"
