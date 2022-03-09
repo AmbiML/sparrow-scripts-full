@@ -5,5 +5,9 @@ PORT=${1:-1234}
 DIR_NAME=$(dirname $(realpath $0))
 TERM_PORT_INPUT=$((${PORT} - 1234))
 SOCKET_PORT=$("${DIR_NAME}/create-kshell-socket-port.sh" ${TERM_PORT_INPUT})
+
+trap "stty sane" 0
+stty sane -echo -icanon
+
 echo "Access port: ${SOCKET_PORT}"
-stty sane -echo -icanon; socat "TCP:localhost:${SOCKET_PORT}" -; stty sane
+socat "TCP:localhost:${SOCKET_PORT}" -
