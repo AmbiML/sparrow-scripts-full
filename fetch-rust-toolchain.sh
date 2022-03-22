@@ -44,6 +44,9 @@ function in-dir {
 }
 
 function list-tarballs {
+    if [[ "$EUID" == 0 ]]; then
+        die "This script must NOT be run as root."
+    fi
     if ! hash gsutil 2>/dev/null; then
         die "Google cloud SDK is not installed."
     fi
@@ -72,8 +75,10 @@ function download-tarball {
     local tarball="$(generate-tarball-name ${version})"
     local checksum="${tarball}.sha256sum"
 
-    try wget -O "${ROOTDIR}/out/${tarball}" "${PUBLIC_ARTIFACTS_URL}/${tarball}"
-    try wget -O "${ROOTDIR}/out/${checksum}" "${PUBLIC_ARTIFACTS_URL}/${checksum}"
+    try mkdir -p "${OUT}"
+
+    try wget -O "${OUT}/${tarball}" "${PUBLIC_ARTIFACTS_URL}/${tarball}"
+    try wget -O "${OUT}/${checksum}" "${PUBLIC_ARTIFACTS_URL}/${checksum}"
 
     # Workaround the fact that we use the datestamped version of the filename
     # at sha256sum creation time. IOW, "latest" is a symbolic name to make
@@ -81,15 +86,16 @@ function download-tarball {
     # Conveniently, this also allows us to determine which tarball is currently
     # set as the latest in storage.
     if [[ "${version}" == "latest" ]]; then
-        local original_name=$(get-original-name "${ROOTDIR}/out/${tarball}")
-        try mv "${ROOTDIR}/out/${tarball}" "${ROOTDIR}/out/${original_name}"
-        try mv "${ROOTDIR}/out/${checksum}" "${ROOTDIR}/out/${original_name}.sha256sum"
+        local original_name=$(get-original-name "${OUT}/${tarball}")
+        try mv "${OUT}/${tarball}" "${OUT}/${original_name}"
+        try mv "${OUT}/${checksum}" "${OUT}/${original_name}.sha256sum"
         tarball="${original_name}"
         checksum="${original_name}.sha256sum"
     fi
 
-    try in-dir "${ROOTDIR}/out" sha256sum -c "${checksum}"
-    try tar -C "${ROOTDIR}/cache" -xf "${ROOTDIR}/out/${tarball}"
+    try in-dir "${OUT}" sha256sum -c "${checksum}"
+    try mkdir -p "${CACHE}"
+    try tar -C "${CACHE}" -xf "${OUT}/${tarball}"
 }
 
 function show-usage {
@@ -164,10 +170,6 @@ function main {
             ;;
     esac
 }
-
-if [[ "$EUID" == 0 ]]; then
-    die "This script must NOT be run as root."
-fi
 
 if [[ -z "${ROOTDIR}" || -z "${RUSTDIR}" ]]; then
     die "Source build/setup.sh first"
