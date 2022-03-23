@@ -60,22 +60,34 @@ function create-tarball {
 
     local tarball="$(generate-tarball-name)"
 
-    if [[ -f "${ROOTDIR}/out/${tarball}" ]]; then
+    if [[ -f "${OUT}/${tarball}" ]]; then
         die "Tarball ${tarball} already exists -- cowardly refusing to overwrite it."
     fi
 
-    echo "Creating tarball in ${ROOTDIR}/out/${tarball}..."
+    mkdir -p "${OUT}"
+
+    echo "Creating tarball in ${OUT}/${tarball}..."
     tar -C "${ROOTDIR}/cache" -c -f - rust_toolchain \
         |xz -T0 -9 \
-        > "${ROOTDIR}/out/${tarball}"
+        > "${OUT}/${tarball}"
 
     if [[ "$?" != 0 ]]; then
-        rm -f "${ROOTDIR}/out/${tarball}"
         die "Couldn't create tarball."
     fi
 
     echo "Generating sha256sums..."
-    (cd "${ROOTDIR}/out" && sha256sum "${tarball}") > "${ROOTDIR}/out/${tarball}.sha256sum"
+    (cd "${OUT}" && sha256sum "${tarball}") > "${OUT}/${tarball}.sha256sum"
+
+    if [[ "$?" != 0 ]]; then
+        die "Couldn't create sha256sum checksum file."
+    fi
+
+    echo "Verifying sha256sum is valid..."
+    (cd "${OUT}" && sha256sum -c "${tarball}.sha256sum")
+
+    if [[ "$?" != 0 ]]; then
+        die "Couldn't verify sha256sum!"
+    fi
 }
 
 function list-tarballs {
@@ -88,12 +100,18 @@ function upload-tarball {
     local tarball="$(generate-tarball-name)"
 
     echo "Uploading tarball..."
-    try gsutil cp "${ROOTDIR}/out/${tarball}" "${PUBLIC_ARTIFACTS_PATH}/${tarball}"
-    try gsutil cp "${ROOTDIR}/out/${tarball}.sha256sum" "${PUBLIC_ARTIFACTS_PATH}/${tarball}.sha256sum"
+    try gsutil cp "${OUT}/${tarball}" "${PUBLIC_ARTIFACTS_PATH}/${tarball}"
+    try gsutil cp "${OUT}/${tarball}.sha256sum" "${PUBLIC_ARTIFACTS_PATH}/${tarball}.sha256sum"
 }
 
 function promote-tarball {
     local promote_date="$1"; shift
+
+    echo "Removing old latest toolchain..."
+    try gsutil rm \
+        "${PUBLIC_ARTIFACTS_PATH}/rust_toolchain_latest.tar.xz"
+    try gsutil rm \
+        "${PUBLIC_ARTIFACTS_PATH}/rust_toolchain_latest.tar.xz.sha256sum"
 
     echo "Promoting tarball rust_toolchain_${promote_date}.tar.xz to rust_toolchain_latest.tar.xz"
     try gsutil cp \
