@@ -18,6 +18,9 @@ REMOTE=localhost:3333
 KATA_OUT=out/kata/${TARGET}/debug
 MATCHA_OUT=out/matcha/riscv32imc-unknown-none-elf/debug
 
+export SOURCE_DIR=${ROOTDIR}/kata
+export BUILD_DIR=$KATA_OUT
+
 # NB: -q suppresses the banner to workaround the banner msg triggering the pager
 # NB: auto-start cpu0 & cpu1 but leave cpu2 (VC) halted
 exec "${GDB}" -q -cd "${ROOTDIR}" \
@@ -31,5 +34,5 @@ exec "${GDB}" -q -cd "${ROOTDIR}" \
   -ex "set pagination on" \
   -ex "target remote ${REMOTE}" \
   -ex "monitor cpu0 IsHalted false" \
-  -ex "monitor cpu1 CreateseL4" \
-  -ex "source sim/config/gdbscript.py"
+  -ex "monitor cpu1 CreateSeL4" \
+  -ex "source sim/renode/tools/sel4_extensions/gdbscript.py"
