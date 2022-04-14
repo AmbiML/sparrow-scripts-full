@@ -12,6 +12,5 @@ requests
 robotframework==4.0.1
 sel4-deps
 setuptools
-simpleeval
 tempita
 wget
