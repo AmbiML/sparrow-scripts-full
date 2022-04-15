@@ -34,5 +34,5 @@ exec "${GDB}" -q -cd "${ROOTDIR}" \
   -ex "set pagination on" \
   -ex "target remote ${REMOTE}" \
   -ex "monitor cpu0 IsHalted false" \
-  -ex "monitor cpu1 CreateSeL4" \
+  -ex "monitor cpu1 CreateSeL4 0xffffffef" \
   -ex "source sim/renode/tools/sel4_extensions/gdbscript.py"
