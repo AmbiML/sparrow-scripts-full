@@ -64,36 +64,24 @@ def main():
         help=("URL to check the IREE release."
               "(default: https://api.github.com/repos/google/iree/releases)")
     )
-    parser.add_argument(
-        "--depth", action="store", default="60",
-        help=("Depth of the release history to search the snapshot for "
-              "(max 100). (default: 60)")
-    )
     args = parser.parse_args()
-    r = requests.get(("%s?per_page=%s" % (args.release_url, args.depth)),
-                     auth=('user', 'pass'))
 
-    if r.status_code != 200:
-        print("Not getting the right snapshot information. Status code: %d",
-              r.status_code)
-        sys.exit(1)
-
-    tag_found = False
     snapshot = None
     if args.tag_name:
-        for x in r.json():
-            if x["tag_name"] == args.tag_name:
-                tag_found = True
-                snapshot = x
-                break
+        r = requests.get(("%s/tags/%s" % (args.release_url, args.tag_name)),
+                         auth=('user', 'pass'))
+        if r.status_code != 200:
+            print("!!!!!IREE snapshot can't be found with tag %s, please try a "
+                  "different tag!!!!!" % args.tag_name)
+            sys.exit(1)
+        snapshot = r.json()
     else:
-        tag_found = True
+        r = requests.get(args.release_url, auth=('user', 'pass'))
+        if r.status_code != 200:
+            print("Not getting the right snapshot information. Status code: %d",
+                  r.status_code)
+            sys.exit(1)
         snapshot = r.json()[0]
-
-    if not tag_found:
-        print("!!!!!IREE snapshot can't be found with tag %s, please try a "
-              "different tag!!!!!" % args.tag_name)
-        sys.exit(1)
 
     tag_name = snapshot["tag_name"]
     commit_sha = snapshot["target_commitish"]
