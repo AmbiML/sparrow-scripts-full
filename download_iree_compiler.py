@@ -29,7 +29,7 @@ def download_artifact(assets, keywords, out_dir):
 
     print("\nDownload %s from %s\n" % (artifact_name, download_url))
     if not os.path.isdir(out_dir):
-        os.mkdir(out_dir)
+        os.makedirs(out_dir)
     out_file = os.path.join(out_dir, artifact_name)
 
     num_retries = 3
@@ -117,7 +117,7 @@ def main():
     # Extract the tarball to ${iree_compiler_dir}/install
     install_dir = iree_compiler_dir / "install"
     if not install_dir:
-        os.mkdir(install_dir)
+        os.makedirs(install_dir)
 
     tar = tarfile.open(tar_file)
     tar.extractall(path=install_dir)
