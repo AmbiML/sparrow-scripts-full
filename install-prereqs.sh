@@ -75,8 +75,8 @@ APT_PACKAGES=(
     pv
     python-is-python3
     python3-protobuf
-    python3
-    python3-dev
+    python3.9
+    python3.9-dev
     python3-pip
     rsync
     srecord
