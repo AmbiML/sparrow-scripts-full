@@ -22,12 +22,11 @@ if [[ -z "${ROOTDIR}" ]]; then
   exit 1
 fi
 if [[ -z "$1" ]]; then
-  echo "Usage: download-toolchain.sh <gcc dir> [<TARGET> | GCC | LLVM] [<VARIANT> | master | RVV]"
+  echo "Usage: download-toolchain.sh <gcc dir> [<TARGET> | GCC | LLVM]"
   exit 1
 fi
 
 TOOLCHAIN_TARGET=${2:-GCC}
-TOOLCHAIN_VARIANT=${3:-master}
 
 TOOLCHAIN_GCC_SRC="$1"
 TOOLCHAIN_SRC="${OUT}/tmp/toolchain"
@@ -53,22 +52,15 @@ if [[ -d "${TOOLCHAIN_GCC_SRC}" ]]; then
 fi
 mkdir -p "${TOOLCHAIN_GCC_SRC}"
 
-# Download from the http://github.com/riscv/riscv-gnu-toolchain. For LLVM 32-bit RVV support or
-# regular gcc, it requires a newer branch, whereas the native gcc rvv toolchain can use
-# rvv-intrinsic branch. Use git init and git fetch to avoid creating extra layer of the
-# source code.
+# Download from the http://github.com/riscv/riscv-gnu-toolchain. For proper
+# support of GDB symbol rendering, it requires a tag points to gcc 10.2.
+# Use git init and git fetch to avoid creating an extra layer of the source code.
 pushd "${TOOLCHAIN_GCC_SRC}" > /dev/null
 git init
 git remote add origin https://github.com/riscv/riscv-gnu-toolchain
-if [[ "${TOOLCHAIN_TARGET}" == "GCC" ]] && [[ "${TOOLCHAIN_VARIANT}" == "RVV" ]]; then
-  echo "Downloading the GNU toolchain source code for GCC RVV"
-  git fetch origin rvv-intrinsic
-  git reset --hard FETCH_HEAD
-else
-  echo "Downloading the GNU toolchain source code from master"
-  git fetch origin --tags
-  git reset --hard ${TOOLCHAINLLVM_TAG}
-fi
+echo "Downloading the GNU toolchain source code from master"
+git fetch origin --tags
+git reset --hard ${TOOLCHAINLLVM_TAG}
 popd > /dev/null
 
 # Update the submodules. The riscv-binutils has to point to upstream binutil-gdb
