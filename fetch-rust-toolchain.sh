@@ -77,7 +77,7 @@ function download-tarball {
 
     try mkdir -p "${OUT}"
 
-    try wget -O "${OUT}/${tarball}" "${PUBLIC_ARTIFACTS_URL}/${tarball}"
+    try wget --progress=dot:giga -O "${OUT}/${tarball}" "${PUBLIC_ARTIFACTS_URL}/${tarball}"
     try wget -O "${OUT}/${checksum}" "${PUBLIC_ARTIFACTS_URL}/${checksum}"
 
     # Workaround the fact that we use the datestamped version of the filename

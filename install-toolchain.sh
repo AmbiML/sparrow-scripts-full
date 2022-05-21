@@ -75,7 +75,7 @@ else
   DOWNLOAD_DIR="${OUT}/tmp"
   mkdir -p "${DOWNLOAD_DIR}"
 
-  wget -P "${DOWNLOAD_DIR}" "${DOWNLOAD_URL}"
+  wget --progress=dot:giga -P "${DOWNLOAD_DIR}" "${DOWNLOAD_URL}"
   wget -P "${DOWNLOAD_DIR}" "${DOWNLOAD_URL}.sha256sum"
   pushd "${DOWNLOAD_DIR}" > /dev/null
   try sha256sum -c "${TOOLCHAIN_TARBALL}.sha256sum"
