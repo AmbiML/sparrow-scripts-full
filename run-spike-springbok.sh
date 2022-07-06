@@ -17,9 +17,9 @@ if [[ "$#" -eq 0 || $1 == "--help" ]]; then
 fi
 
 # spike CLI options:
-# -m<a:m,b:n>: specifies the memory layout. Springbok currently has 1MB IMEM at
-#              0x3200_0000 and 16MB DMEM at 0x3400_0000
+# -m<a:m,b:n>: specifies the memory layout. Springbok currently has 16MB TCM 
+# at 0x3400_0000
 # --varch: specifies the v-ext configuration w.r.t. vlen and elen.
 # --pc: ELF entry point. Set at the beginning of IMEM.
-"${OUT}/host/spike/bin/spike" -m0x32000000:0x100000,0x34000000:0x1000000 \
- --varch=vlen:512,elen:32 --pc=0x32000000 $@
+"${OUT}/host/spike/bin/spike" -m0x34000000:0x1000000 \
+ --varch=vlen:512,elen:32 --pc=0x34000000 $@
