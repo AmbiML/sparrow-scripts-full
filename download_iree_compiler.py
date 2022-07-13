@@ -37,7 +37,7 @@ def download_artifact(assets, keywords, out_dir):
         try:
             wget.download(download_url, out=out_file)
             break
-        except urllib.error.HTTPError as e:
+        except (urllib.error.HTTPError, ConnectionError) as e:
             if i == num_retries:
                 raise
             print(f"{e}\nDownload failed. Retrying...")
