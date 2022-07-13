@@ -1,3 +1,7 @@
+# pin to v4.0.0 since newer pushes are broken
+# TODO(jtgans): Remove this pinning once upstream is unborked.
+fixtures==4.0.0
+
 camkes-deps
 hjson
 lit
