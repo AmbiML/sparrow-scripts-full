@@ -12,7 +12,7 @@ fi
 
 TARGET=riscv32-unknown-elf
 GDB="${ROOTDIR}"/cache/toolchain/bin/${TARGET}-gdb
-PROGRAM=out/sparrow_boot_rom/build-out/multihart_boot_rom/multihart_boot_rom_sim_verilator.elf
+PROGRAM=out/sparrow_boot_rom/multihart_boot_rom/multihart_boot_rom.elf
 REMOTE=localhost:3333
 
 KATA_OUT=out/kata/${TARGET}/debug
@@ -35,4 +35,5 @@ exec "${GDB}" -q -cd "${ROOTDIR}" \
   -ex "target remote ${REMOTE}" \
   -ex "monitor cpu0 IsHalted false" \
   -ex "monitor cpu1 CreateSeL4 0xffffffef" \
-  -ex "source sim/renode/tools/sel4_extensions/gdbscript.py"
+  -ex "source sim/renode/tools/sel4_extensions/gdbscript.py" \
+  -ex "sel4 symbol-autoswitching false"
