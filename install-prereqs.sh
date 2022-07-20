@@ -19,6 +19,8 @@ APT_REQUIREMENTS=""
 
 APT_PACKAGES=(
     asciidoctor
+    bazel
+    bazel-5.1.1
     bison
     build-essential
     ccache
