@@ -19,6 +19,3 @@ sel4-deps
 setuptools
 tempita
 wget
-
-# meson 0.54 is no longer buildable in python 3.10
-https://storage.googleapis.com/sparrow-public-artifacts/meson-0.54.0-py3-none-any.whl
