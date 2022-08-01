@@ -53,7 +53,7 @@ aarch64)
     CROSS_COMPILER_PREFIX="aarch64-none-linux-gnu-"
     RUST_TARGET="${TARGET_ARCH}-unknown-none"
     PLATFORM=rpi3
-    MACHINE=raspi32a
+    MACHINE=raspi3b
     ;;
 riscv32)
     # https://docs.sel4.systems/Hardware/spike.html
@@ -76,17 +76,17 @@ esac
 mkdir camkes-${TARGET_ARCH}-rootserver
 cd camkes-${TARGET_ARCH}-rootserver
 
-# TODO(sleffler): disable colorization prompt for automation
-repo init -u https://spacebeaker.googlesource.com/sparrow/manifest -m camkes-manifest.xml
+# NB: "no" disables colorization
+echo 'no' | repo init -u https://spacebeaker.googlesource.com/sparrow/manifest -m camkes-manifest.xml
 repo sync -j$(nproc)
 
 # Export required variables
 # TODO: requiring SEL4_DIR & SEL4_OUT_DIR in the environment is
 #   awkward; maybe add fallback/defaults in the build glue
 
-export ROOTDIR=$(pwd)
-export SEL4_DIR=$(pwd)/kernel
-export SEL4_OUT_DIR=$(pwd)/build/kernel
+export ROOTDIR="$(pwd)"
+export SEL4_DIR="${ROOTDIR}/kernel"
+export SEL4_OUT_DIR="${ROOTDIR}/build/kernel"
 
 # NB: the gnu toolchain is expected to be in your shell search PATH; e.g.
 # cd ~
