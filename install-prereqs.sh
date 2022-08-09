@@ -48,8 +48,8 @@ APT_PACKAGES=(
     llvm-11-tools
     gcc
     g++
-    gcc-10
-    g++-10
+    gcc-11
+    g++-11
     libftdi1
     libftdi1-dev
     libfl2
