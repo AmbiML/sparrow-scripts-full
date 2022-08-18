@@ -59,6 +59,7 @@ APT_PACKAGES=(
     libgtk2.0-0
     libpixman-1-dev
     libpython3-dev
+    libpython3.10
     libsqlite3-dev
     libssl-dev
     libtinfo-dev
@@ -78,7 +79,9 @@ APT_PACKAGES=(
     python-is-python3
     python3-protobuf
     python3
+    python3.10
     python3-dev
+    python3.10-dev
     python3-pip
     rsync
     srecord
