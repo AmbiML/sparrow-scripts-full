@@ -79,6 +79,7 @@ BUILD_DIR="build-${TARGET_ARCH}"
 #   awkward; maybe add fallback/defaults in the build glue
 
 export ROOTDIR="$(pwd)"
+export KATA_RUST_VERSION="nightly-2021-11-05"
 export SEL4_DIR="${ROOTDIR}/kernel"
 export SEL4_OUT_DIR="${ROOTDIR}/${BUILD_DIR}/kernel"
 
@@ -88,27 +89,63 @@ export SEL4_OUT_DIR="${ROOTDIR}/${BUILD_DIR}/kernel"
 # tar xf gcc-arm-11.2-2022.02-x86_64-aarch64-none-linux-gnu.tar.xz
 # PATH=~/gcc-arm-11.2-2022.02-x86_64-aarch64-none-linux-gnu/bin:$PATH
 
-# NB: use an existing toolchain but make sure the necessary target is installed
-echo "If your rust toolchain is not setup use something like:"
-echo "rustup target add --toolchain nightly-2021-11-05-x86_64-unknown-linux-gnu ${RUST_TARGET}"
+rustup --version >/dev/null 2>&1 || {
+    cat <<EOF
+It appears you don't have the rust installer on this system; please check here:
+
+    https://www.rust-lang.org/tools/install
+
+for help getting started.
+EOF
+    exit 1
+}
+rustup toolchain list | grep -q "${KATA_RUST_VERSION}" || {
+    cat <<EOF
+It appears your rust toolchains do not include version ${KATA_RUST_VERSION}, this is
+required to build this software. Use something like:
+
+    rustup toolchain add ${KATA_RUST_VERSION}
+
+to add the necessary version.,
+EOF
+    exit 1
+}
+rustup "+${KATA_RUST_VERSION}" target list | grep installed | grep -q "${RUST_TARGET}" || {
+    cat <<EOF
+It appears your rust toolchain is not setup for ${RUST_TARGET}, use something like:
+
+    rustup target add --toolchain ${KATA_RUST_VERSION}-x86_64-unknown-linux-gnu ${RUST_TARGET}
+
+to add support for ${RUST_TARGET}.
+EOF
+    exit 1
+}
+
+# TODO(sleffler): this is slow, maybe cache result
+pip list 2>/dev/null | grep -q -i tempita || {
+    cat <<EOF
+It appears your python setup lacks the tempita module; this is necessary to build this software.
+Something like:
+
+    pip install tempita
+
+should install the necessary module.
+EOF
+}
 
 # Run cmake to build the ninja files
 test -f ${BUILD_DIR}/build.ninja || {
     mkdir -p ${BUILD_DIR}
-    pushd ${BUILD_DIR}
-    ../init-build.sh \
+    (cd ${BUILD_DIR} && ../init-build.sh \
         -DCROSS_COMPILER_PREFIX=${CROSS_COMPILER_PREFIX} \
         -DRUST_TARGET=${RUST_TARGET} \
         -DPLATFORM=${PLATFORM} \
         -DCAPDL_LOADER_APP=kata-os-rootserver \
         -DSIMULATION=TRUE \
-        ${EXTRA_INIT_ARGS}
-    popd # ${BUILD_DIR}
+        ${EXTRA_INIT_ARGS})
 }
 
 # Run ninja to do the actual build
-pushd ${BUILD_DIR}
-ninja -j$(nproc)
-popd # ${BUILD_DIR}
+ninja -C ${BUILD_DIR} -j$(nproc)
 
 echo "To run the simulator use: (cd ${BUILD_DIR} && ./simulate -M ${MACHINE})"
