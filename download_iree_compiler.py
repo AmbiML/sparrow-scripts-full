@@ -4,6 +4,7 @@
 import errno
 import os
 import sys
+import shutil
 import tarfile
 import time
 import argparse
@@ -47,12 +48,6 @@ def download_artifact(assets, keywords, out_dir):
 
 def main():
     """ Download IREE host compiler from the snapshot release."""
-    iree_compiler_dir = os.getenv("IREE_COMPILER_DIR")
-    if not iree_compiler_dir:
-        print("Please run 'source build/setup.sh' first")
-        sys.exit(1)
-    iree_compiler_dir = Path(iree_compiler_dir)
-
     parser = argparse.ArgumentParser(
         description="Download IREE host compiler from snapshot releases")
     parser.add_argument(
@@ -64,7 +59,14 @@ def main():
         help=("URL to check the IREE release."
               "(default: https://api.github.com/repos/google/iree/releases)")
     )
+    parser.add_argument(
+        "--iree_compiler_dir", action="store", required=True,
+        default="",
+        help=("IREE compiler installed directory")
+    )
     args = parser.parse_args()
+
+    iree_compiler_dir = Path(args.iree_compiler_dir)
 
     snapshot = None
     if args.tag_name:
@@ -125,13 +127,15 @@ def main():
         tar.extractall(path=install_dir)
 
     try:
-        os.symlink(f"{iree_compiler_dir}/bin/iree-import-tflite",
-                f"{install_dir}/bin/iree-import-tflite")
+        shutil.copy2(f"{iree_compiler_dir}/bin/iree-import-tflite",
+                     f"{install_dir}/bin/iree-import-tflite",
+                     follow_symlinks=True)
     except OSError as e:
         if e.errno == errno.EEXIST:
             os.remove(f"{install_dir}/bin/iree-import-tflite")
-            os.symlink(f"{iree_compiler_dir}/bin/iree-import-tflite",
-                f"{install_dir}/bin/iree-import-tflite")
+            shutil.copy2(f"{iree_compiler_dir}/bin/iree-import-tflite",
+                         f"{install_dir}/bin/iree-import-tflite",
+                         follow_symlinks=True)
 
     os.remove(tar_file)
     os.remove(whl_file)
