@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Download IREE host compiler from the snapshot release."""
 
+import errno
 import os
 import sys
 import tarfile
@@ -111,7 +112,8 @@ def main():
         snapshot["assets"], ["linux-x86_64.tar"], tmp_dir)
 
     # Install IREE TFLite tool
-    cmd = (f"pip3 install {whl_file} --no-cache-dir")
+    cmd = (f"pip3 install --target={iree_compiler_dir} {whl_file} "
+           "--upgrade --no-cache-dir")
     os.system(cmd)
 
     # Extract the tarball to ${iree_compiler_dir}/install
@@ -121,6 +123,15 @@ def main():
 
     with tarfile.open(tar_file) as tar:
         tar.extractall(path=install_dir)
+
+    try:
+        os.symlink(f"{iree_compiler_dir}/bin/iree-import-tflite",
+                f"{install_dir}/bin/iree-import-tflite")
+    except OSError as e:
+        if e.errno == errno.EEXIST:
+            os.remove(f"{install_dir}/bin/iree-import-tflite")
+            os.symlink(f"{iree_compiler_dir}/bin/iree-import-tflite",
+                f"{install_dir}/bin/iree-import-tflite")
 
     os.remove(tar_file)
     os.remove(whl_file)
