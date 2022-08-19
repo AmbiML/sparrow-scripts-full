@@ -17,10 +17,13 @@
 # Check IREE runtime commit version to be consistent with the compiler.
 
 IREE_SRC="$1"
-IREE_COMPILER_DIR="$2"
 
-if [[ $# -ne 2 ]]; then
-  echo "Usage: check-iree-commit.sh <iree source dir> <iree compiler dir>"
+if [[ -z "${IREE_COMPILER_DIR}" ]]; then
+  echo "Source build/setup.sh first"
+  exit 1
+fi
+if [[ -z "${IREE_SRC}" ]]; then
+  echo "Usage: check-iree-commit.sh <iree source dir>"
   exit 1
 fi
 
