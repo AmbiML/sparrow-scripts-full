@@ -6,11 +6,10 @@ import sys
 import tarfile
 import time
 import argparse
-import requests
 import urllib
-import wget
-
 from pathlib import Path
+import requests
+import wget
 
 
 def download_artifact(assets, keywords, out_dir):
@@ -24,10 +23,10 @@ def download_artifact(assets, keywords, out_dir):
             artifact_match = True
             break
     if not artifact_match:
-        print("%s is not found" % (keywords[0]))
+        print(f"{keywords[0]} is not found")
         sys.exit(1)
 
-    print("\nDownload %s from %s\n" % (artifact_name, download_url))
+    print(f"\nDownload {artifact_name} from {download_url}\n")
     if not os.path.isdir(out_dir):
         os.makedirs(out_dir)
     out_file = os.path.join(out_dir, artifact_name)
@@ -47,12 +46,6 @@ def download_artifact(assets, keywords, out_dir):
 
 def main():
     """ Download IREE host compiler from the snapshot release."""
-    iree_compiler_dir = os.getenv("IREE_COMPILER_DIR")
-    if not iree_compiler_dir:
-        print("Please run 'source build/setup.sh' first")
-        sys.exit(1)
-    iree_compiler_dir = Path(iree_compiler_dir)
-
     parser = argparse.ArgumentParser(
         description="Download IREE host compiler from snapshot releases")
     parser.add_argument(
@@ -64,15 +57,23 @@ def main():
         help=("URL to check the IREE release."
               "(default: https://api.github.com/repos/google/iree/releases)")
     )
+    parser.add_argument(
+        "--iree_compiler_dir", action="store", required=True,
+        default="",
+        help=("IREE compiler installed directory")
+    )
     args = parser.parse_args()
+
+    iree_compiler_dir = Path(args.iree_compiler_dir)
 
     snapshot = None
     if args.tag_name:
-        r = requests.get(("%s/tags/%s" % (args.release_url, args.tag_name)),
+        r = requests.get((f"{args.release_url}/tags/{args.tag_name}"),
                          auth=('user', 'pass'))
         if r.status_code != 200:
-            print("!!!!!IREE snapshot can't be found with tag %s, please try a "
-                  "different tag!!!!!" % args.tag_name)
+            print(
+                f"!!!!!IREE snapshot can't be found with tag {args.tag_name}, "
+                "please try a different tag!!!!!")
             sys.exit(1)
         snapshot = r.json()
     else:
@@ -86,14 +87,14 @@ def main():
     tag_name = snapshot["tag_name"]
     commit_sha = snapshot["target_commitish"]
 
-    print("Snapshot: %s" % tag_name)
+    print(f"Snapshot: {tag_name}")
 
     tag_file = iree_compiler_dir / "tag"
 
     # Check the tag of the existing download.
     tag_match = False
     if os.path.isfile(tag_file):
-        with open(tag_file, 'r') as f:
+        with open(tag_file, 'r', encoding="utf-8") as f:
             for line in f:
                 if tag_name == line.replace("\n", ""):
                     tag_match = True
@@ -111,7 +112,7 @@ def main():
         snapshot["assets"], ["linux-x86_64.tar"], tmp_dir)
 
     # Install IREE TFLite tool
-    cmd = ("pip3 install %s --no-cache-dir" % whl_file)
+    cmd = (f"pip3 install {whl_file} --no-cache-dir")
     os.system(cmd)
 
     # Extract the tarball to ${iree_compiler_dir}/install
@@ -119,17 +120,16 @@ def main():
     if not install_dir:
         os.makedirs(install_dir)
 
-    tar = tarfile.open(tar_file)
-    tar.extractall(path=install_dir)
-    tar.close()
+    with tarfile.open(tar_file) as tar:
+        tar.extractall(path=install_dir)
 
     os.remove(tar_file)
     os.remove(whl_file)
     print("\nIREE compiler is installed")
 
     # Add tag file for future checks
-    with open(tag_file, "w") as f:
-        f.write("%s\ncommit_sha: %s\n" % (tag_name, commit_sha))
+    with open(tag_file, "w", encoding="utf-8") as f:
+        f.write(f"{tag_name}\ncommit_sha: {commit_sha}\n")
 
 
 if __name__ == "__main__":
