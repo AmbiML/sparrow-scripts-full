@@ -48,6 +48,19 @@ def download_artifact(assets, keywords, out_dir):
 
 def main():
     """ Download IREE host compiler from the snapshot release."""
+    pin_toolchains = os.getenv("PIN_TOOLCHAINS", '').lower().split(' ')
+    if "iree" in pin_toolchains:
+        print()
+        print("****************************************************")
+        print("*                                                  *")
+        print("*  PIN_TOOLCHAINS includes iree! Skipping the      *")
+        print("*  download of the latest IREE compiler binaries.  *")
+        print("*  Please DO NOT file bugs for IREE mis-behavior!  *")
+        print("*                                                  *")
+        print("****************************************************")
+        print()
+        sys.exit(0)
+
     parser = argparse.ArgumentParser(
         description="Download IREE host compiler from snapshot releases")
     parser.add_argument(

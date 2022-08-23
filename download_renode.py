@@ -49,6 +49,19 @@ def strip_top_directory(tar):
 
 def main():
     """Download and install renode release package."""
+    pin_toolchains = os.getenv('PIN_TOOLCHAINS', '').lower().split(' ')
+    if "renode" in pin_toolchains:
+        print()
+        print("****************************************************")
+        print("*                                                  *")
+        print("*  PIN_TOOLCHAINS includes renode! Skipping the    *")
+        print("*  download of the latest Renode binaries.         *")
+        print("*  PLEASE DON'T file bugs for Renode mis-behavior! *")
+        print("*                                                  *")
+        print("****************************************************")
+        print()
+        sys.exit(0)
+
     out_dir = os.getenv("OUT")
     if not out_dir:
         out_dir = "/tmp"
@@ -92,8 +105,8 @@ def main():
             "(.+?).linux-portable.tar.gz", files[1]).group(1)
 
     if not release_found:
-        print(f"!!!!!Renode can't be found with release {args.release_name}, please try a "
-              "different release!!!!!")
+        print(f"!!!!!Renode can't be found with release {args.release_name}, "
+              "please try a different release!!!!!")
         sys.exit(1)
 
     print(f"Release: {release_name}")
@@ -129,10 +142,9 @@ def main():
     tar_file = download_artifact(args.release_url, artifact_name, tmp_dir)
 
     # Extract the tarball
-    tar = tarfile.open(tar_file)
-    _, members = strip_top_directory(tar)
-    tar.extractall(members=members, path=renode_dir)
-    tar.close()
+    with tarfile.open(tar_file) as tar:
+        _, members = strip_top_directory(tar)
+        tar.extractall(members=members, path=renode_dir)
 
     os.remove(tar_file)
     print("\nRenode is installed")
