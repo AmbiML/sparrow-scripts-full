@@ -5,6 +5,7 @@ import errno
 import os
 import sys
 import shutil
+import subprocess
 import tarfile
 import time
 import argparse
@@ -79,7 +80,26 @@ def main():
     )
     args = parser.parse_args()
 
+    # Check if the IREE runtime lib is in sync with the tag
+    root_dir = os.getenv("ROOTDIR")
+    cmd = ["git", "-C", f"{root_dir}/toolchain/iree", "rev-parse", "HEAD"]
+
+    try:
+        result = subprocess.run(cmd, stdout=subprocess.PIPE, check=True)
+    except subprocess.CalledProcessError as e:
+        print("Failed to check IREE runtime version")
+        sys.exit(e.returncode)
+
+    iree_runtime_commit = result.stdout.decode("utf-8")
     iree_compiler_dir = Path(args.iree_compiler_dir)
+    tag_file = iree_compiler_dir / "tag"
+
+    if os.path.isfile(tag_file):
+        with open(tag_file, "r", encoding="utf-8") as file:
+            for line in file:
+                if iree_runtime_commit.replace("\n", "") in line:
+                    print("Compiler version matches runtime. Skip download")
+                    sys.exit(0)
 
     snapshot = None
     if args.tag_name:
