@@ -36,6 +36,8 @@
 # TODO(sleffler): maybe add install-* scripts for necessary toolchains
 # TODO(sleffler): maybe import dependent simulators as needed: qemu, spike, renode
 
+set -e
+
 TARGET_ARCH=${1:-aarch64}
 EXTRA_INIT_ARGS=
 MACHINE=
