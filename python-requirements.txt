@@ -19,3 +19,4 @@ sel4-deps
 setuptools
 tempita
 wget
+yapf
