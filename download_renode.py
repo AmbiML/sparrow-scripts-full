@@ -74,7 +74,7 @@ def main():
     parser.add_argument(
         "--release_url",
         action="store",
-        default="https://dl.antmicro.com/projects/renode/builds/?C=M;O=D",
+        default="https://dl.antmicro.com/projects/renode/builds/",
         help=("URL to check the IREE release."
               "(default: https://dl.antmicro.com/projects/renode/builds/)"))
     parser.add_argument(
@@ -85,7 +85,7 @@ def main():
 
     args = parser.parse_args()
 
-    with urllib.request.urlopen(args.release_url) as website:
+    with urllib.request.urlopen(args.release_url + '?C=M;O=D') as website:
         html_list = website.read().decode("utf-8")
     files = re.findall(r'href="(renode-.*git.*\.linux-portable\.tar\.gz)"',
                        html_list)
