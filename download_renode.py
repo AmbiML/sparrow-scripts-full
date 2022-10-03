@@ -72,11 +72,11 @@ def main():
         "--release_name", action="store", default="",
         help="Release to be downloaded. If not set, download the latest")
     parser.add_argument(
-        "--release_url", action="store",
-        default="https://dl.antmicro.com/projects/renode/builds/",
+        "--release_url",
+        action="store",
+        default="https://dl.antmicro.com/projects/renode/builds/?C=M;O=D",
         help=("URL to check the IREE release."
-              "(default: https://dl.antmicro.com/projects/renode/builds/)")
-    )
+              "(default: https://dl.antmicro.com/projects/renode/builds/)"))
     parser.add_argument(
         "--renode_dir", action="store", required=True,
         default="",
@@ -87,7 +87,8 @@ def main():
 
     with urllib.request.urlopen(args.release_url) as website:
         html_list = website.read().decode("utf-8")
-    files = re.findall('href="(.*linux-portable.tar.gz)"', html_list)
+    files = re.findall(r'href="(renode-.*git.*\.linux-portable\.tar\.gz)"',
+                       html_list)
 
     release_found = False
     release_name = None
