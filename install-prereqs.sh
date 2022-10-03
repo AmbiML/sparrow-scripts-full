@@ -45,7 +45,7 @@ APT_PACKAGES=(
     libcunit1-dev
     libc6-dev
     libtool
-    llvm-11-tools
+    llvm-13-tools
     gcc
     g++
     gcc-11
