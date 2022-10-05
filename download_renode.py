@@ -100,10 +100,10 @@ def main():
                     "(.+?).linux-portable.tar.gz", file).group(1)
                 break
     else:
-        # The latest release is the symlink of the second entry.
+        # The latest nightly release is the symlink of the first entry.
         release_found = True
-        release_name = re.search(
-            "(.+?).linux-portable.tar.gz", files[1]).group(1)
+        release_name = re.search("(.+?).linux-portable.tar.gz",
+                                 files[0]).group(1)
 
     if not release_found:
         print(f"!!!!!Renode can't be found with release {args.release_name}, "
