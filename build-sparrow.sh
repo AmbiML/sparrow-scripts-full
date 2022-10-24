@@ -17,7 +17,7 @@
 # This script is derived from work by mwitkowski@antmicro.com
 
 # Script for building a CAmkES test setup using the minimal bits from
-# KataOS. This is meant for testing kata-os-common portability and as
+# CantripOS. This is meant for testing cantrip-os-common portability and as
 # a pathway to public use of the Rust code bits.
 #
 # This script assumes you have a gnu toolchain setup for the target
@@ -25,8 +25,8 @@
 # The rust compiler likewise must be in your search path; the script
 # suggests using rustup to request target support.
 #
-# Beware the KataOS Rust code currently uses a nightly build of Rust.
-# Check projects/kata/apps/system/rust.cmake for cargo usage.
+# Beware the CantripOS Rust code currently uses a nightly build of Rust.
+# Check projects/cantrip/apps/system/rust.cmake for cargo usage.
 #
 # The riscv* and arm/aarch* targets are build tested and in some cases
 # tested under simulation. The x86* targets are untested and unsupported.
@@ -81,7 +81,7 @@ BUILD_DIR="build-${TARGET_ARCH}"
 #   awkward; maybe add fallback/defaults in the build glue
 
 export ROOTDIR="$(pwd)"
-export KATA_RUST_VERSION="nightly-2021-11-05"
+export CANTRIP_RUST_VERSION="nightly-2021-11-05"
 export SEL4_DIR="${ROOTDIR}/kernel"
 export SEL4_OUT_DIR="${ROOTDIR}/${BUILD_DIR}/kernel"
 
@@ -101,22 +101,22 @@ for help getting started.
 EOF
     exit 1
 }
-rustup toolchain list | grep -q "${KATA_RUST_VERSION}" || {
+rustup toolchain list | grep -q "${CANTRIP_RUST_VERSION}" || {
     cat <<EOF
-It appears your rust toolchains do not include version ${KATA_RUST_VERSION}, this is
+It appears your rust toolchains do not include version ${CANTRIP_RUST_VERSION}, this is
 required to build this software. Use something like:
 
-    rustup toolchain add ${KATA_RUST_VERSION}
+    rustup toolchain add ${CANTRIP_RUST_VERSION}
 
 to add the necessary version.,
 EOF
     exit 1
 }
-rustup "+${KATA_RUST_VERSION}" target list | grep installed | grep -q "${RUST_TARGET}" || {
+rustup "+${CANTRIP_RUST_VERSION}" target list | grep installed | grep -q "${RUST_TARGET}" || {
     cat <<EOF
 It appears your rust toolchain is not setup for ${RUST_TARGET}, use something like:
 
-    rustup target add --toolchain ${KATA_RUST_VERSION}-x86_64-unknown-linux-gnu ${RUST_TARGET}
+    rustup target add --toolchain ${CANTRIP_RUST_VERSION}-x86_64-unknown-linux-gnu ${RUST_TARGET}
 
 to add support for ${RUST_TARGET}.
 EOF
@@ -142,7 +142,7 @@ test -f ${BUILD_DIR}/build.ninja || {
         -DCROSS_COMPILER_PREFIX=${CROSS_COMPILER_PREFIX} \
         -DRUST_TARGET=${RUST_TARGET} \
         -DPLATFORM=${PLATFORM} \
-        -DCAPDL_LOADER_APP=kata-os-rootserver \
+        -DCAPDL_LOADER_APP=cantrip-os-rootserver \
         -DSIMULATION=TRUE \
         ${EXTRA_INIT_ARGS})
 }

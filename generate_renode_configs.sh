@@ -16,7 +16,7 @@
 
 RENODE_CONFIG_OUT=${OUT}/renode_configs
 OT_EARLGREY_OUT=${OUT}/opentitan/build-out
-OT_SHODAN_OUT=${OUT}/sparrow/build-out
+OT_SPARROW_OUT=${OUT}/sparrow/build-out
 
 if [[ -z "${ROOTDIR}" ]];
 then
@@ -79,6 +79,6 @@ fi
 
 if [ -d ${ROOTDIR}/hw/opentitan/hw/top_sparrow ]; then
   gen_platform sparrow
-  SHODAN_ELFS=$(find ${OT_SHODAN_OUT} -type f \( -iname "*sim_verilator.elf" ! -iname "*rom*" \))
-  gen_sparrow_scripts_for_elfs ${SHODAN_ELFS}
+  SPARROW_ELFS=$(find ${OT_SPARROW_OUT} -type f \( -iname "*sim_verilator.elf" ! -iname "*rom*" \))
+  gen_sparrow_scripts_for_elfs ${SPARROW_ELFS}
 fi

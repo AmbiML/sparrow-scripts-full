@@ -53,8 +53,8 @@ def main(argv):
     if not file_list:
         sys.exit(0)
 
-    nightly_flag = os.getenv("KATA_RUST_VERSION") if os.getenv(
-        "KATA_RUST_VERSION") else "nightly-2021-11-05"
+    nightly_flag = os.getenv("CANTRIP_RUST_VERSION") if os.getenv(
+        "CANTRIP_RUST_VERSION") else "nightly-2021-11-05"
 
     cmd = [opts.rustfmt_path, f"+{nightly_flag}", "--check", "--color", "never"]
 

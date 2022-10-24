@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Connect to the kata console shell & optionally tee output
+# Connect to the cantrip console shell & optionally tee output
 # to /tmp/kshell*.log
 
 # Usage: kshell [-l] [port]

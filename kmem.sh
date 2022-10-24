@@ -92,5 +92,5 @@ function parseargv {
 
 parseargv "$@"
 
-KATA_OUT="${ROOTDIR}/out/kata/${TARGET}/${BUILD}"
-exec awk -f "${ROOTDIR}/scripts/mem.awk" "${KATA_OUT}/system.cdl" DETAILS="${DETAILS}"
+CANTRIP_OUT="${ROOTDIR}/out/cantrip/${TARGET}/${BUILD}"
+exec awk -f "${ROOTDIR}/scripts/mem.awk" "${CANTRIP_OUT}/system.cdl" DETAILS="${DETAILS}"

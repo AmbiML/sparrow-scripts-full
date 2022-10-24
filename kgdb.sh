@@ -29,14 +29,14 @@ GDB="${ROOTDIR}"/cache/toolchain/bin/${TARGET}-gdb
 PROGRAM=out/sparrow_boot_rom/multihart_boot_rom/multihart_boot_rom.elf
 REMOTE=localhost:3333
 
-KATA_OUT=out/kata/${TARGET}/debug
+CANTRIP_OUT=out/cantrip/${TARGET}/debug
 MATCHA_OUT=out/matcha/riscv32imc-unknown-none-elf/debug
 
 USE_SEL4_EXTENSIONS="true"
 USE_SEL4_SYMBOL_AUTOSWITCHING="false"
 
-export SOURCE_DIR=${ROOTDIR}/kata
-export BUILD_DIR=$KATA_OUT
+export SOURCE_DIR=${ROOTDIR}/cantrip
+export BUILD_DIR=$CANTRIP_OUT
 
 function parseargv {
     local usage="Usage: kgdb.sh [-h|--help] [-S|--no-sel4-extensions] [-a|--sel4-symbol-autoswitching]"

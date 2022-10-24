@@ -17,7 +17,7 @@
 # This script is derived from work by mwitkowski@antmicro.com
 
 # Script for building a CAmkES test setup using the minimal bits from
-# KataOS. This is meant for testing kata-os-common portability and as
+# CantripOS. This is meant for testing cantrip-os-common portability and as
 # a pathway to public use of the Rust code bits.
 #
 # This script assumes you have a gnu toolchain setup for the target
@@ -25,8 +25,8 @@
 # The rust compiler likewise must be in your search path; the script
 # will use rustup to request target support.
 #
-# Beware the KataOS Rust code currently uses a nightly build of Rust.
-# Check projects/kata/apps/system/rust.cmake for cargo usage.
+# Beware the CantripOS Rust code currently uses a nightly build of Rust.
+# Check projects/cantrip/apps/system/rust.cmake for cargo usage.
 #
 # The riscv* and arm/aarch* targets are build tested and in some cases
 # tested under simulation. The x86* targets are untested and likely
@@ -105,7 +105,7 @@ test -d build || {
         -DCROSS_COMPILER_PREFIX=${CROSS_COMPILER_PREFIX} \
         -DRUST_TARGET=${RUST_TARGET} \
         -DPLATFORM=${PLATFORM} \
-        -DCAPDL_LOADER_APP=kata-os-rootserver \
+        -DCAPDL_LOADER_APP=cantrip-os-rootserver \
         -DSIMULATION=TRUE \
         ${EXTRA_INIT_ARGS}
     popd # build

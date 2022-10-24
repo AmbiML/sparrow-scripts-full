@@ -24,13 +24,13 @@ fi
 
 # HACK: sel4-config needs a path to the kernel build which could be
 #   in debug or release
-export SEL4_OUT_DIR=${SEL4_OUT_DIR:-"$ROOTDIR/out/kata/riscv32-unknown-elf/debug/kernel/"}
+export SEL4_OUT_DIR=${SEL4_OUT_DIR:-"$ROOTDIR/out/cantrip/riscv32-unknown-elf/debug/kernel/"}
 if [[ ! -d "${SEL4_OUT_DIR}/gen_config" ]]; then
     echo "No kernel build found at ${SEL4_OUT_DIR}; build a kernel first"
     exit 2
 fi
 
-CARGO="${CARGO_HOME}/bin/cargo +${KATA_RUST_VERSION}"
+CARGO="${CARGO_HOME}/bin/cargo +${CANTRIP_RUST_VERSION}"
 CARGO_TARGET="--target riscv32imac-unknown-none-elf"
 CARGO_OPTS='-Z unstable-options -Z avoid-dev-deps'
 

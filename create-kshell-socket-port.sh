@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Create kata shell socket port based on the renode port number as the input
+# Create cantrip shell socket port based on the renode port number as the input
 # argument.
 
 TERM_PORT=${1:-0}
