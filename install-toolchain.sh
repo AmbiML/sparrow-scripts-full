@@ -80,7 +80,7 @@ else
   pushd "${DOWNLOAD_DIR}" > /dev/null
   # tarball may be timestamped during build. Update the filename in sha256sum
   # file to check.
-  sed -i -e "s,_[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}.tar.gz,.tar.gz," ${TOOLCHAIN_TARBALL}.sha256sum"
+  sed -i -e "s,_[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}.tar.gz,.tar.gz," "${TOOLCHAIN_TARBALL}.sha256sum"
   try sha256sum -c "${TOOLCHAIN_TARBALL}.sha256sum"
   popd > /dev/null
 fi
