@@ -137,7 +137,7 @@ function promote-tarball {
         "${PUBLIC_ARTIFACTS_PATH}/${tarball_name}.tar.gz"
     try gsutil cp \
         "${PUBLIC_ARTIFACTS_PATH}/toolchain_backups/${promote_tarball}.sha256sum" \
-        "${PUBLIC_ARTIFACTS_PATH}/${tarball_name}.tar.gz.256sum"
+        "${PUBLIC_ARTIFACTS_PATH}/${tarball_name}.tar.gz.sha256sum"
 }
 
 function main {
