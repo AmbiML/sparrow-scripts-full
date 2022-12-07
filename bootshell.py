@@ -13,13 +13,17 @@ from elftools.elf.elffile import ELFFile
 
 class BootromShell(cmd.Cmd):
     intro = "Welcome to Bootrom Shell"
-    prompt = "BOOTROM> "
+    # The bootrom will display its own prompt, no need for one here.
+    prompt = ""
     socket = None
     poller = None
     pty_in = None
     pty_out = None
     connected = False
     use_pty = False
+    default_host_name = "Renode"
+    default_host_addr = ("localhost", 31415)
+    default_max_retry = 60
 
     ############################################################################
     # Network stuff here
@@ -85,10 +89,10 @@ class BootromShell(cmd.Cmd):
         if self.use_pty:
             print(self.pty_in)
             result = self.pty_in.read(size)
-            return result
-        result = self.socket.recv(size)
-        if len(result) == 0:
-            self.disconnect()
+        else:
+            result = self.socket.recv(size)
+            if len(result) == 0:
+                self.disconnect()
         return result
 
     def poll(self, timeout):
@@ -207,9 +211,9 @@ class BootromShell(cmd.Cmd):
 
     def do_connect(self, _=""):
         """Connects to the Renode server, localhost@31415 by default."""
-        host_name = "Renode"
-        host_addr = ("localhost", 31415)
-        max_retry = 60
+        host_name = self.default_host_name
+        host_addr = self.default_host_addr
+        max_retry = self.default_max_retry
 
         if self.connect(host_name, host_addr, max_retry):
             print(f"Connected to {host_name} @ {self.getpeername()}")
@@ -229,7 +233,7 @@ class BootromShell(cmd.Cmd):
             if self.wait_for_sync(1000):
                 # Sync seen, turn remote echo off and mute the ack
                 self.send("echo off\n".encode())
-                self.wait_for_idle(100, False)
+                self.wait_for_idle(1000, False)
                 return
 
         print("Did not see command prompt from server")

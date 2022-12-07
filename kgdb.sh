@@ -26,7 +26,7 @@ fi
 
 TARGET=riscv32-unknown-elf
 GDB="${ROOTDIR}"/cache/toolchain/bin/${TARGET}-gdb
-PROGRAM=out/sparrow_boot_rom/multihart_boot_rom/multihart_boot_rom.elf
+PROGRAM=out/sparrow_boot_rom/multihart_boot_rom.elf
 REMOTE=localhost:3333
 
 CANTRIP_OUT=out/cantrip/${TARGET}/debug
