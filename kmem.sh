@@ -68,7 +68,7 @@ function parseargv {
                 ;;
 
             -D|--debug)
-                BUILD="wdebug"
+                BUILD="debug"
                 shift
                 ;;
 
