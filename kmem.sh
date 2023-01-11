@@ -46,7 +46,7 @@ fi
 TARGET=${TARGET:-riscv32-unknown-elf}
 
 # Default is a summary of release build.
-DETAILS="0"
+DETAILS=""
 BUILD="release"
 
 function parseargv {
@@ -58,12 +58,12 @@ function parseargv {
     for i; do
         case "$1" in
             -d|--details)
-                DETAILS="1"
+                DETAILS="--details"
                 shift
                 ;;
 
             -s|--summary)
-                DETAILS="0"
+                DETAILS=""
                 shift
                 ;;
 
@@ -93,4 +93,5 @@ function parseargv {
 parseargv "$@"
 
 CANTRIP_OUT="${ROOTDIR}/out/cantrip/${TARGET}/${BUILD}"
-exec awk -f "${ROOTDIR}/scripts/mem.awk" "${CANTRIP_OUT}/system.cdl" DETAILS="${DETAILS}"
+PYTHONPATH="${PYTHONPATH}:${ROOTDIR}/cantrip/projects/capdl/python-capdl-tool"
+exec python3 "${ROOTDIR}/cantrip/tools/seL4/kmem-tool/kmem.py" --object-state "${CANTRIP_OUT}/object-final.pickle" ${DETAILS}
