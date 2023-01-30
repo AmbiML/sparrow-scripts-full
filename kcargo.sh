@@ -32,6 +32,7 @@ fi
 
 CARGO="${CARGO_HOME}/bin/cargo +${CANTRIP_RUST_VERSION}"
 CARGO_TARGET="--target riscv32imac-unknown-none-elf"
+CARGO_TARGET="--target ${RUST_TARGET:-riscv32imac-unknown-none-elf} --features CONFIG_PLAT_SPARROW"
 CARGO_OPTS='-Z unstable-options -Z avoid-dev-deps'
 
 export RUSTFLAGS='-Z tls-model=local-exec'
