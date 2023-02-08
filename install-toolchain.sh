@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Install the prebuilt RISC-V GCC/LLVM toolchain.
+# Install the prebuilt RISC-V GCC/LLVM/Kelvin toolchain.
 
 function clean {
   if [[ ! -f "${PREINSTALL_DIR}/${TOOLCHAIN_TARBALL}" ]]; then
@@ -39,7 +39,7 @@ fi
 if [[ -z "$1" ]]; then
   cat << EOM
 Usage: install-toolchain.sh target
-Where target is gcc or llvm
+Where target is gcc, llvm, or kelvin
 EOM
   exit 1
 fi
@@ -53,6 +53,9 @@ case "${TARGET}" in
 
   llvm)
     TOOLCHAIN_TARBALL="toolchain_iree_rv32.tar.gz"
+    ;;
+  kelvin)
+    TOOLCHAIN_TARBALL="toolchain_kelvin.tar.gz"
     ;;
 
   *)
