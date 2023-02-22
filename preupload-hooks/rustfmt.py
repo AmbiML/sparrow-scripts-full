@@ -22,9 +22,6 @@ import sys
 def get_parser():
     """Return a command line parser."""
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--rustfmt_path",
-                        default="rustfmt",
-                        help="The path to the rustfmt binary.")
     parser.add_argument('files',
                         type=str,
                         nargs='*',
@@ -35,28 +32,21 @@ def get_parser():
 
 def main(argv):
     """The main entry."""
+    if not os.getenv("ROOTDIR"):
+        print("source build/setup.sh first")
+        sys.exit(1)
+
     parser = get_parser()
     opts = parser.parse_args(argv)
-
-    # Check and set rustfmt path in case `source build/setup.sh` is not run in
-    # the shell session. In repo preupload, the path should be set in
-    # PREUPLOAD.cfg.
-    if opts.rustfmt_path != "rustfmt":
-        # Add rustfmt path to system PATH and set up RUSTUP_HOME at one level up
-        # rustfmt has to have both variables set up to work properly.
-        path = os.path.realpath(opts.rustfmt_path + "/..")
-        os.environ["PATH"] = path + ":" + os.getenv("PATH")
-        os.environ["RUSTUP_HOME"] = path + "/.."
 
     # Only process .rs files
     file_list = [f for f in opts.files if f.endswith("rs")]
     if not file_list:
         sys.exit(0)
 
-    nightly_flag = os.getenv("CANTRIP_RUST_VERSION") if os.getenv(
-        "CANTRIP_RUST_VERSION") else "nightly-2021-11-05"
+    nightly_flag = os.getenv("CANTRIP_RUST_VERSION")
 
-    cmd = [opts.rustfmt_path, f"+{nightly_flag}", "--check", "--color", "never"]
+    cmd = ["rustfmt", f"+{nightly_flag}", "--check", "--color", "never"]
 
     for f in file_list:
         cmd.append(f)
