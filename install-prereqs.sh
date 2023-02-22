@@ -79,9 +79,7 @@ APT_PACKAGES=(
     python-is-python3
     python3-protobuf
     python3
-    python3.10
     python3-dev
-    python3.10-dev
     python3-pip
     rsync
     srecord
@@ -114,12 +112,6 @@ function sudo_try {
     sudo "$@" || die
 }
 
-function try_use_python3_10 {
-  echo "Update Python3 to use Python 3.10"
-  sudo_try ln -sf /usr/bin/python3.10 /usr/bin/python3
-  echo "Python version : $(python3 --version)"
-}
-
 function try_install_apt_packages {
     sudo_try apt-get update
     sudo_try apt-get install -y "${APT_PACKAGES[@]}"
@@ -127,9 +119,6 @@ function try_install_apt_packages {
     if [[ ! -z "${APT_REQUIREMENTS}" ]]; then
         sed 's/#.*//' "${APT_REQUIREMENTS}" | sudo_try xargs apt-get install -y
     fi
-
-    # Force python3 to use python3.10 (b/267082842)
-    python3 --version | grep "Python 3.10" || try_use_python3_10
 }
 
 function try_install_python_packages {

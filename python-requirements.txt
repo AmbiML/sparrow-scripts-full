@@ -2,7 +2,23 @@
 # TODO(jtgans): Remove this pinning once upstream is unborked.
 fixtures==4.0.0
 
-camkes-deps
+# TODO(hcindyl): Use camkes-deps 0.7.4 directly instead of explicitly installing
+# the depedency packages.
+aenum
+jinja2>=3.0.0
+ordered-set
+plyplus
+pyelftools
+sel4-deps
+pycparser
+pyfdt
+concurrencytest
+# capDL deps
+sortedcontainers
+hypothesis
+
+# camkes-deps
+
 hjson
 lit
 mako
