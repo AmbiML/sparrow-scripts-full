@@ -81,6 +81,7 @@ APT_PACKAGES=(
     python3
     python3-dev
     python3-pip
+    python3-venv
     rsync
     srecord
     texinfo
@@ -123,7 +124,18 @@ function try_install_apt_packages {
 
 function try_install_python_packages {
     local package
+
     if [[ ! -z ${PYTHON_REQUIREMENTS} ]]; then
+        if [[ -z ${ROOTDIR} ]]; then
+            echo "Source build/setup.sh first."
+            exit 1
+        fi
+
+        # Setup python virtual environment.
+        if [[ ! -f "${PYTHON_SPARROW_ENV}/bin/activate" ]]; then
+            echo Creating virtual python environment ${PYTHON_SPARROW_ENV}
+            python3 -m venv --system-site-packages --upgrade-deps "${PYTHON_SPARROW_ENV}"
+        fi
         PIP_INSTALL_ARGS=""
         for REQ_FILE in ${PYTHON_REQUIREMENTS} ; do
             PIP_INSTALL_ARGS="${PIP_INSTALL_ARGS} -r ${REQ_FILE}"
