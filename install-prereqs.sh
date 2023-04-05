@@ -136,11 +136,12 @@ function try_install_python_packages {
             echo Creating virtual python environment ${PYTHON_SPARROW_ENV}
             python3 -m venv --system-site-packages --upgrade-deps "${PYTHON_SPARROW_ENV}"
         fi
-        PIP_INSTALL_ARGS=""
+        local -a PIP_INSTALL_ARGS=()
         for REQ_FILE in ${PYTHON_REQUIREMENTS} ; do
-            PIP_INSTALL_ARGS="${PIP_INSTALL_ARGS} -r ${REQ_FILE}"
+            PIP_INSTALL_ARGS+=("-r" "${REQ_FILE}")
         done
-        pip3 install ${PIP_INSTALL_ARGS}
+        PIP_INSTALL_ARGS+=("${ROOTDIR}/sw/flatbuffers/python")
+        pip3 install "${PIP_INSTALL_ARGS[@]}"
     fi
 }
 
