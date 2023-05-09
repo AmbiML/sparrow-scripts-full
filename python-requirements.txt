@@ -30,7 +30,7 @@ psutil
 pyfzf
 pyyaml
 requests
-robotframework==4.0.1
+robotframework==6.0.2
 scipy
 sel4-deps
 setuptools
