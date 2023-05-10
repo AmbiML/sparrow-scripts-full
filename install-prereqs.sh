@@ -140,8 +140,11 @@ function try_install_python_packages {
         for REQ_FILE in ${PYTHON_REQUIREMENTS} ; do
             PIP_INSTALL_ARGS+=("-r" "${REQ_FILE}")
         done
-        PIP_INSTALL_ARGS+=("${ROOTDIR}/sw/flatbuffers/python")
         pip3 install "${PIP_INSTALL_ARGS[@]}"
+        # Install flatbuffer from local source
+        # Note: Specify a version based on a fixed timestamp so tensorflow
+        # module won't complain about it (>=23.1.21).
+        VERSION=v20230510 pip3 install "${ROOTDIR}/sw/flatbuffers/python"
     fi
 }
 
