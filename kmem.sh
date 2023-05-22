@@ -25,13 +25,10 @@
 #  stack        CAmkES per-thread stack
 #  bootinfo     Bootinfo page passed by the rooteserver
 #  mmio         MMIO region (backed by devivce memory)
-#  copyregion   VSpace region (w/o backing memory)
 #
-# Note mmio + copyregion sections do not count against memory usage as
-# they are allocated from dedicated memory that does not have physical
+# Note mmio sections do not count against memory usage as they are
+# allocated from dedicated memory that does not have physical
 # memory backing.
-#
-# TODO: account for system resources
 #
 # ROOTDIR must be set to the top of the sparrow development tree
 # (as done by build/setup.sh).
@@ -48,10 +45,12 @@ TARGET=${TARGET:-riscv32-unknown-elf}
 # Default is a summary of release build.
 DETAILS=""
 BUILD="release"
+KERNEL="--kernel"
+VERBOSE=""
 
 function parseargv {
-    local usage="Usage: kmem.sh [-h|--help] [-d|--details] [-D|--debug] [-R|--release] [-s|--summary]"
-    local args=$(getopt -o dDRs --long details,debug,release,summary,help -n kmem.sh -- "$@")
+    local usage="Usage: kmem.sh [-h|--help] [-d|--details] [-D|--debug] [-R|--release] [-s|--summary] [-u|--user] [-v|--verbose]"
+    local args=$(getopt -o dDRsuv --long details,debug,release,summary,user,verbose,help -n kmem.sh -- "$@")
 
     set -- $args
 
@@ -77,6 +76,16 @@ function parseargv {
                 shift
                 ;;
 
+            -u|--user)
+                KERNEL=""
+                shift
+                ;;
+
+            -v|--verbose)
+                VERBOSE="--verbose"
+                shift
+                ;;
+
             --)
                 shift
                 break
@@ -94,4 +103,4 @@ parseargv "$@"
 
 CANTRIP_OUT="${ROOTDIR}/out/cantrip/${TARGET}/${BUILD}"
 PYTHONPATH="${PYTHONPATH}:${ROOTDIR}/cantrip/projects/capdl/python-capdl-tool"
-exec python3 "${ROOTDIR}/cantrip/tools/seL4/kmem-tool/kmem.py" --object-state "${CANTRIP_OUT}/object-final.pickle" ${DETAILS}
+exec python3 "${ROOTDIR}/cantrip/tools/seL4/kmem-tool/kmem.py" --object-state "${CANTRIP_OUT}/object-final.pickle" ${DETAILS} ${KERNEL} ${VERBOSE}
