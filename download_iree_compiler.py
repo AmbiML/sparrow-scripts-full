@@ -119,7 +119,8 @@ def main():
     snapshot = None
     if args.tag_name:
         r = requests.get((f"{args.release_url}/tags/{args.tag_name}"),
-                         auth=('user', 'pass'))
+                         auth=('user', 'pass'),
+                         timeout=60)
         if r.status_code != 200:
             print(
                 f"!!!!!IREE snapshot can't be found with tag {args.tag_name}, "
@@ -127,7 +128,7 @@ def main():
             sys.exit(1)
         snapshot = r.json()
     else:
-        r = requests.get(args.release_url, auth=('user', 'pass'))
+        r = requests.get(args.release_url, auth=('user', 'pass'), timeout=60)
         if r.status_code != 200:
             print("Not getting the right snapshot information. Status code: %d",
                   r.status_code)
@@ -156,8 +157,7 @@ def main():
 
     tmp_dir = Path(os.getenv("OUT")) / "tmp"
     whl_file = download_artifact(snapshot["assets"],
-                                 ["iree_tools_tflite", "linux", "x86_64.whl"],
-                                 tmp_dir)
+                                 ["iree_tools_tflite", ".whl"], tmp_dir)
     tar_file = download_artifact(
         snapshot["assets"], ["linux-x86_64.tar"], tmp_dir)
 
