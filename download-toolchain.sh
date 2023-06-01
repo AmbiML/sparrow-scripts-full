@@ -35,9 +35,6 @@ LLVM_SRC="${TOOLCHAIN_SRC}/llvm-project"
 TOOLCHAINLLVM_TAG="2021.06.18"
 TOOLCHAINLLVM_BINUTILS_URL="git://sourceware.org/git/binutils-gdb.git"
 
-
-TOOLCHAIN_OUT="${CACHE}/toolchain"
-
 if [[ ! "${TOOLCHAIN_TARGET}" == "GCC" ]] &&
   [[ ! "${TOOLCHAIN_TARGET}" == "LLVM" ]]; then
   echo "Unsupported toochain target: ${TOOLCHAIN_TARGET}"
@@ -66,7 +63,7 @@ popd > /dev/null
 # Update the submodules. The riscv-binutils has to point to upstream binutil-gdb
 # regardless of what it is in .gitmodules
 pushd "${TOOLCHAIN_GCC_SRC}" > /dev/null
-git submodule update --init --jobs=8
+git submodule update --init --jobs=8 riscv-*
 if [[ "${TOOLCHAIN_TARGET}" == "LLVM" ]]; then
   cd "riscv-binutils"
   git remote set-url origin "${TOOLCHAINLLVM_BINUTILS_URL}"
