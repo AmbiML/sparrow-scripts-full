@@ -22,7 +22,7 @@ if [[ -z "${ROOTDIR}" ]]; then
   exit 1
 fi
 if [[ -z "$1" ]]; then
-  echo "Usage: download-toolchain.sh <gcc dir> [<TARGET> | GCC | LLVM]"
+  echo "Usage: download-toolchain.sh <gcc dir> [<TARGET> | GCC | LLVM | KELVIN]"
   exit 1
 fi
 
@@ -32,11 +32,12 @@ TOOLCHAIN_GCC_SRC="$1"
 TOOLCHAIN_SRC="${OUT}/tmp/toolchain"
 LLVM_SRC="${TOOLCHAIN_SRC}/llvm-project"
 
-TOOLCHAINLLVM_TAG="2021.06.18"
+TOOLCHAIN_TAG="2021.06.18"
 TOOLCHAINLLVM_BINUTILS_URL="git://sourceware.org/git/binutils-gdb.git"
 
 if [[ ! "${TOOLCHAIN_TARGET}" == "GCC" ]] &&
-  [[ ! "${TOOLCHAIN_TARGET}" == "LLVM" ]]; then
+  [[ ! "${TOOLCHAIN_TARGET}" == "LLVM" ]] &&
+  [[ ! "${TOOLCHAIN_TARGET}" == "KELVIN" ]]; then
   echo "Unsupported toochain target: ${TOOLCHAIN_TARGET}"
   exit 1
 fi
@@ -47,27 +48,36 @@ if [[ -d "${TOOLCHAIN_GCC_SRC}" ]]; then
   echo "Remove existing ${TOOLCHAIN_GCC_SRC}..."
   rm -rf "${TOOLCHAIN_GCC_SRC}"
 fi
-mkdir -p "${TOOLCHAIN_GCC_SRC}"
 
 # Download from the http://github.com/riscv/riscv-gnu-toolchain. For proper
 # support of GDB symbol rendering, it requires a tag points to gcc 10.2.
-# Use git init and git fetch to avoid creating an extra layer of the source code.
-pushd "${TOOLCHAIN_GCC_SRC}" > /dev/null
-git init
-git remote add origin https://github.com/riscv/riscv-gnu-toolchain
-echo "Downloading the GNU toolchain source code from master"
-git fetch origin --tags
-git reset --hard ${TOOLCHAINLLVM_TAG}
-popd > /dev/null
+echo "Downloading the GNU toolchain source code from tag ${TOOLCHAIN_TAG}"
+git clone https://github.com/riscv/riscv-gnu-toolchain -b "${TOOLCHAIN_TAG}" \
+  "${TOOLCHAIN_GCC_SRC}"
 
 # Update the submodules. The riscv-binutils has to point to upstream binutil-gdb
 # regardless of what it is in .gitmodules
 pushd "${TOOLCHAIN_GCC_SRC}" > /dev/null
-git submodule update --init --jobs=8 riscv-*
+
+# CentOS7 git does not support parellel jobs.
+if [[ "${TOOLCHAIN_TARGET}" == "KELVIN" ]]; then
+  git submodule update --init riscv-*
+else
+  git submodule update --init --jobs=8 riscv-*
+fi
+
 if [[ "${TOOLCHAIN_TARGET}" == "LLVM" ]]; then
   cd "riscv-binutils"
   git remote set-url origin "${TOOLCHAINLLVM_BINUTILS_URL}"
   git pull -f origin master --jobs=8 --depth=1
+  git checkout FETCH_HEAD
+fi
+
+# Update riscv-binutils for kelvin to binutils 2.40
+if [[ "${TOOLCHAIN_TARGET}" == "KELVIN" ]]; then
+  cd "riscv-binutils"
+  git remote set-url origin "${TOOLCHAINLLVM_BINUTILS_URL}"
+  git fetch -f origin binutils-2_40 --depth=1
   git checkout FETCH_HEAD
 fi
 popd > /dev/null
@@ -83,5 +93,14 @@ if [[ "${TOOLCHAIN_TARGET}" == "LLVM" ]]; then
   git init
   git remote add origin https://github.com/llvm/llvm-project
   git pull origin main --jobs=8 --depth=1
+  popd > /dev/null
+fi
+
+# Patch Kelvin custom ops
+if [[ "${TOOLCHAIN_TARGET}" == "KELVIN" ]]; then
+  pushd "${TOOLCHAIN_GCC_SRC}/riscv-binutils" > /dev/null
+  git apply "${ROOTDIR}/build/patches/kelvin/0001-Kelvin-riscv-binutils-patch.patch"
+  cp "${ROOTDIR}/build/patches/kelvin/kelvin-opc.h" "include/opcode/kelvin-opc.h"
+  cp "${ROOTDIR}/build/patches/kelvin/kelvin-opc.c" "opcodes/kelvin-opc.c"
   popd > /dev/null
 fi
