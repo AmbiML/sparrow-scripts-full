@@ -114,10 +114,10 @@ function sudo_try {
 }
 
 function try_install_apt_packages {
-    sudo_try apt-get update
-    sudo_try apt-get install -y "${APT_PACKAGES[@]}"
-
     if [[ ! -z "${APT_REQUIREMENTS}" ]]; then
+        sudo_try apt-get update
+        sudo_try apt-get install -y "${APT_PACKAGES[@]}"
+
         sed 's/#.*//' "${APT_REQUIREMENTS}" | sudo_try xargs apt-get install -y
     fi
 }
@@ -141,10 +141,12 @@ function try_install_python_packages {
             PIP_INSTALL_ARGS+=("-r" "${REQ_FILE}")
         done
         pip3 install "${PIP_INSTALL_ARGS[@]}"
-        # Install flatbuffer from local source
-        # Note: Specify a version based on a fixed timestamp so tensorflow
-        # module won't complain about it (>=23.1.21).
-        VERSION=v20230510 pip3 install "${ROOTDIR}/sw/flatbuffers/python"
+        if [[ -d "${ROOTDIR}/sw/flatbuffers/python" ]]; then
+            # Install flatbuffer from local source
+            # Note: Specify a version based on a fixed timestamp so tensorflow
+            # module won't complain about it (>=23.1.21).
+            VERSION=v20230510 pip3 install "${ROOTDIR}/sw/flatbuffers/python"
+        fi
     fi
 }
 
