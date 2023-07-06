@@ -34,7 +34,6 @@ robotframework==6.0.2
 scipy
 sel4-deps
 setuptools
-tempita
 # TODO(lundong): not pin nightly after TOSA features are in release ver.
 tf-nightly==2.14.0.dev20230519
 wget
