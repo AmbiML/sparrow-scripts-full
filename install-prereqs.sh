@@ -60,10 +60,11 @@ APT_PACKAGES=(
     libpixman-1-dev
     libpython3-dev
     libpython3.10
+    librust-libudev-dev
     libsqlite3-dev
     libssl-dev
     libtinfo-dev
-    libtinfo5
+    libtinfo6
     libwww-perl
     libxml2-dev
     libxml2-utils
