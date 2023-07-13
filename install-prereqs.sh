@@ -50,6 +50,7 @@ APT_PACKAGES=(
     g++
     gcc-11
     g++-11
+    libelf-dev
     libftdi1
     libftdi1-dev
     libfl2
