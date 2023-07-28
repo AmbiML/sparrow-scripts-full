@@ -40,7 +40,8 @@ if [[ -z "${ROOTDIR}" ]]; then
     exit 1
 fi
 
-TARGET=${TARGET:-riscv32-unknown-elf}
+# NB: should always be set but default anyway
+PLATFORM=${PLATFORM:-sparrow}
 
 # Default is a summary of release build.
 DETAILS=""
@@ -101,6 +102,6 @@ function parseargv {
 
 parseargv "$@"
 
-CANTRIP_OUT="${ROOTDIR}/out/cantrip/${TARGET}/${BUILD}"
+CANTRIP_OUT="${ROOTDIR}/out/cantrip/${PLATFORM}/${BUILD}"
 PYTHONPATH="${PYTHONPATH}:${ROOTDIR}/cantrip/projects/capdl/python-capdl-tool"
 exec python3 "${ROOTDIR}/cantrip/tools/seL4/kmem-tool/kmem.py" --object-state "${CANTRIP_OUT}/object-final.pickle" ${DETAILS} ${KERNEL} ${VERBOSE}
