@@ -44,6 +44,7 @@ APT_PACKAGES=(
     libclang-dev
     libcunit1-dev
     libc6-dev
+    libsystemc-dev
     libtool
     llvm-13-tools
     gcc
