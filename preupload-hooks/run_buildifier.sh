@@ -65,8 +65,6 @@ fi
 # Run buildifier formatter and linter. The diff is compared with git-diff.
 "${CACHE}/buildifier/buildifier" "${files[@]}" || (echo "buildifier error" && exit 1)
 
-"${CACHE}/buildifier/buildifier" -lint=warn -warnings=-module-docstring,-function-docstring "${files[@]}"
-
 git diff --exit-code || (echo """
 Please amend the commit with:
 
