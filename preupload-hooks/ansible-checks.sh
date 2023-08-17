@@ -18,24 +18,11 @@
 
 set -e
 
-ANSIBLE_CHANGE=0
 ANSIBLE_PATH=$1
-shift
-
-# Check to see if any changed files are in the ansible path
-for FILE in $@; do
-  if [[ $FILE == $ANSIBLE_PATH* ]]; then
-    ANSIBLE_CHANGE=1
-    break
-  fi
-done
-
-if (( ANSIBLE_CHANGE == 1 )); then
-  if ! command -v ansible-lint >/dev/null; then
-    echo "Command ansible-lint not found. Install the ansible-lint package."
-    exit 1
-  fi
-
-  # Run ansible checks. Just lint for now
-  ansible-lint $ANSIBLE_PATH
+if ! command -v ansible-lint >/dev/null; then
+  echo "Command ansible-lint not found. Install the ansible-lint package."
+  exit 1
 fi
+
+# Run ansible checks. Just lint for now
+ansible-lint $ANSIBLE_PATH
