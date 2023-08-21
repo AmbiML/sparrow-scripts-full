@@ -25,4 +25,5 @@ if ! command -v ansible-lint >/dev/null; then
 fi
 
 # Run ansible checks. Just lint for now
-ansible-lint $ANSIBLE_PATH
+cd $(dirname ${ANSIBLE_PATH})
+ansible-lint $(basename ${ANSIBLE_PATH})
