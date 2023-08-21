@@ -75,6 +75,8 @@ APT_PACKAGES=(
     mono-complete
     ncurses-dev
     ninja-build
+    openjdk-17-jdk-headless
+    openjdk-17-jre-headless
     perl
     protobuf-compiler
     pv
