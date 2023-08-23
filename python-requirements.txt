@@ -35,6 +35,6 @@ scipy
 sel4-deps
 setuptools
 # TODO(lundong): not pin nightly after TOSA features are in release ver.
-tf-nightly==2.14.0.dev20230705
+tf-nightly==2.15.0.dev20230817
 wget
 yapf
