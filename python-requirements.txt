@@ -17,6 +17,9 @@ concurrencytest
 sortedcontainers
 hypothesis
 
+# Robot test framework for FPGA tests
+pyserial
+
 # camkes-deps
 
 hjson
